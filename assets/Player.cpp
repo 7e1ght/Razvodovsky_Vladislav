@@ -2,65 +2,47 @@
 
 #include <conio.h>
 
-void Player::move()
+inline void Player::changeDirection()
 {
-	if (_kbhit())
-	{
-		char pressed = _getch();
+	using namespace characters;
 
-		switch (pressed)
-		{
-		case 'w':
-		case 'W':
-			nextDir = UP;
-			break;
-		case 'A':
-		case 'a':
-			nextDir = LEFT;
-			break;
-		case 's':
-		case 'S':
-			nextDir = DOWN;
-			break;
-		case 'd':
-		case 'D':
-			nextDir = RIGHT;
-			break;
-		default:
-			break;
-		}
+	switch (_getch())
+	{
+	case 'W': case 'w':
+		_nextDir = UP;
+		break;
+	case 'A': case 'a':
+		_nextDir = LEFT;
+		break;
+	case 'S': case 's':
+		_nextDir = DOWN;
+		break;
+	case 'D': case 'd':
+		_nextDir = RIGHT;
+		break;
+	default:
+		break;
 	}
 
-	if (!isCollusion(nextDir))
-		dir = nextDir;
+	
+}
 
-	if (!isCollusion(dir))
-	{
-		switch (dir)
-		{
-		case UP:
-			pos.y -= 1.f * speedCoef;
-			break;
-		case DOWN:
-			pos.y += 1.f * speedCoef;
-			break;
-		case LEFT:
-			pos.x -= 1.f * speedCoef;
-			break;
-		case RIGHT:
-			pos.x += 1.f * speedCoef;
-			break;
-		case STOP:
-			break;
-		default:
-			break;
-		}
+void Player::calcDirection()
+{
+	if (!isCollusion(_nextDir))
+		_dir = _nextDir;
+
+	if (_kbhit())
+	{	
+		changeDirection();	
 	}
 }
 
-Player::Player(const char blocks[][gamefield::GAMEFIELD_COLUMN]) : Characters(blocks)
+Player::Player(const char blocks[][gamefield::GAMEFIELD_COLUMN]) :
+	Characters(blocks), _nextDir(characters::STOP)
 {
-	pos = { 12.f, 19.f };
-	dir = STOP;
-	speedCoef = 0.8f;
+	_pos = { characters::PLAYER_START_X, characters::PLAYER_START_Y };
+	_appearance = characters::PLAYER_APPREARANCE;
+	_dir = characters::STOP;
+	_moveInterval = 0.08f;
 }

@@ -1,40 +1,37 @@
 #pragma once
 #include "Support.h"
 
-struct Position
-{
-	float x;
-	float y;
-
-	Position(float xx, float yy) : x(xx), y(yy)
-	{
-
-	}
-
-	Position()
-	{
-
-	}
-};
-
 class Characters
 {
+private:	
+	void fillRow(const char blocks[][gamefield::GAMEFIELD_COLUMN], int row);
+	void changePosition();
+
+	sec _moveTimer;
+
 protected:
-	enum DIRECTION { UP, DOWN, LEFT, RIGHT, STOP };
+	sec _timer;
+	char _blocks[gamefield::GAMEFIELD_ROW][gamefield::GAMEFIELD_COLUMN];
 
-	char blocks[gamefield::GAMEFIELD_ROW][gamefield::GAMEFIELD_COLUMN];
-	Position pos;
+	drawer::ConsoleSymbolData _appearance;
+	sec _moveInterval;
 
-	DIRECTION dir;
+	characters::Position _pos;
+	characters::DIRECTION _dir;
 
-	float speedCoef;
+	bool isCollusion(characters::DIRECTION d);
 
-	bool isCollusion(DIRECTION d);
+	virtual void calcDirection() = 0;
+
 public:
-	Position getPosition();
-	virtual void move() = 0;
+	characters::Position getPosition();
+	void move(sec delta);
 
-	void setSpeedCoef(unsigned short coef);
+	characters::DIRECTION getDir();
+
+	void setMoveInterval(sec interval);
+	drawer::ConsoleSymbolData getAppearance();
 
 	Characters(const char blocks[][gamefield::GAMEFIELD_COLUMN]);
+	virtual ~Characters() {}
 };

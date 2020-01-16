@@ -1,75 +1,85 @@
 #include "Drawer.h"
 #include <iostream>
 
-void Drawer::Drawer::setCursorPos(unsigned short x, unsigned short y)
+using namespace drawer;
+
+void Drawer::setCursorPos(unsigned short x, unsigned short y)
 {
 	COORD pos;
 	pos.X = x;
 	pos.Y = y;
 
-	SetConsoleCursorPosition(hOut, pos);
+	SetConsoleCursorPosition(_hOut, pos);
 }
 
-void Drawer::Drawer::setColor(unsigned short foreground, unsigned short background)
+void Drawer::setColor(unsigned short foreground, unsigned short background)
 {
 	unsigned char color = foreground | (background << 4);
-	SetConsoleTextAttribute(hOut, color);
+	SetConsoleTextAttribute(_hOut, color);
 }
 
-void Drawer::Drawer::clearCanvas()
+inline void Drawer::setRowToZero(int row)
 {
-	for (int i = 0; i < CANVAS_COLUMN; i++)
+	for (int j = 0; CANVAS_ROW > j; j++)
 	{
-		for (int j = 0; j < CANVAS_ROW; j++)
-		{
-			canvas[i][j].symbol = 0;
-			canvas[i][j].foreground = 0;
-			canvas[i][j].background = 0;
-		}
+		_canvas[row][j].symbol = 0;
+		_canvas[row][j].foreground = 0;
+		_canvas[row][j].background = 0;
 	}
 }
 
-void Drawer::Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char backgroud)
+void Drawer::clearCanvas()
 {
-	canvas[x][y].symbol = c;
-	canvas[x][y].foreground = foreground;
-	canvas[x][y].background = backgroud;
+	for (int i = 0; CANVAS_COLUMN > i; i++)
+	{
+		setRowToZero(i);
+	}
 }
 
-void Drawer::Drawer::setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
+void Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char backgroud)
+{
+	_canvas[x][y].symbol = c;
+	_canvas[x][y].foreground = foreground;
+	_canvas[x][y].background = backgroud;
+}
+
+void Drawer::setChar(unsigned short x, unsigned short y, ConsoleSymbolData apprearance)
+{
+	_canvas[x][y].symbol = apprearance.symbol;
+	_canvas[x][y].foreground = apprearance.foreground;
+	_canvas[x][y].background = apprearance.background;
+}
+
+void Drawer::setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
 {
 	while (*text)
 		setChar(*(text++), x++, y, foreground, background);
 }
 
-void Drawer::Drawer::draw()
+inline void Drawer::outSymbolDataRow(int row)
 {
-	using namespace std;
-	for (int i = 0; i < CANVAS_COLUMN; i++)
+	for (int j = 0; CANVAS_ROW > j ; j++)
 	{
-		for (int j = 0; j < CANVAS_ROW; j++)
-		{
-			setCursorPos(i, j);
+		setCursorPos(row, j);
 
-			setColor(canvas[i][j].foreground, canvas[i][j].background);
-			cout << canvas[i][j].symbol;
-		}
+		setColor(_canvas[row][j].foreground, _canvas[row][j].background);
+		std::cout << _canvas[row][j].symbol;
+	}
+}
+
+void Drawer::draw()
+{
+	for (int i = 0; CANVAS_COLUMN > i ; i++)
+	{
+		outSymbolDataRow(i);
 	}
 
 	setCursorPos(0, 0);
 }
 
-Drawer::Drawer::Drawer()
+Drawer::Drawer()
 {
-	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	_hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	for (int i = 0; i < CANVAS_COLUMN; i++)
-	{
-		for (int j = 0; j < CANVAS_ROW; j++)
-		{
-			canvas[i][j].symbol = 0;
-			canvas[i][j].foreground = FOREGROUND_GREEN;
-			canvas[i][j].background = 0;
-		}
-	}
+	clearCanvas();
 }

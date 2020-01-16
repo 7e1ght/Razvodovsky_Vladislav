@@ -3,73 +3,96 @@
 #include "Support.h"
 
 using namespace gamefield;
+using namespace characters;
 
 Position Characters::getPosition()
 {
-	return this->pos;
+	return _pos;
 }
 
-void Characters::setSpeedCoef(unsigned short coef)
+inline void Characters::changePosition()
 {
-	speedCoef = coef;
-}
-
-bool Characters::isCollusion(DIRECTION d)
-{
-	unsigned short heroX = pos.x;
-	unsigned short heroY = pos.y;
-
-	switch (d)
+	switch (_dir)
 	{
 	case UP:
-		if (blocks[heroY - 1][heroX] == WALL || blocks[heroY - 1][heroX] == DOOR) return true;
+		_pos.y -= 1;
 		break;
 	case DOWN:
-		if (blocks[heroY + 1][heroX] == WALL || blocks[heroY + 1][heroX] == DOOR) return true;
-		break;
-	case LEFT:
-		if (blocks[heroY][heroX-1] == WALL || blocks[heroY][heroX-1] == DOOR) return true;
+		_pos.y += 1;
 		break;
 	case RIGHT:
-		if (blocks[heroY][heroX + 1] == WALL || blocks[heroY][heroX+1] == DOOR) return true;
+		_pos.x += 1;
+		if (_pos.x >= GAMEFIELD_ROW-1) _pos.x = 0;
 		break;
-	case STOP:
+	case LEFT:
+		_pos.x -= 1;
+		if (_pos.x <= 0) _pos.x = GAMEFIELD_ROW - 1;
 		break;
 	default:
 		break;
 	}
+}
 
-	//switch (d)
-	//{
-	//case UP:
-	//	if (game->getBlock(heroY - 1, heroX) == WALL || game->getBlock(heroY - 1, heroX) == DOOR) return true;
-	//	break;
-	//case DOWN:
-	//	if (game->getBlock(heroY + 1, heroX) == WALL || game->getBlock(heroY + 1, heroX) == DOOR) return true;
-	//	break;
-	//case LEFT:
-	//	if (game->getBlock(heroY, heroX - 1) == WALL || game->getBlock(heroY, heroX - 1) == DOOR) return true;
-	//	break;
-	//case RIGHT:
-	//	if (game->getBlock(heroY, heroX + 1) == WALL || game->getBlock(heroY, heroX + 1) == DOOR) return true;
-	//	break;
-	//case STOP:
-	//	break;
-	//default:
-	//	break;
-	//}
-	//return false;
+void Characters::move(sec delta)
+{
+	_timer += delta;
+
+	_moveTimer += delta;
+
+	if (_moveTimer >= _moveInterval)
+	{
+		calcDirection();
+
+		if (!isCollusion(_dir)) changePosition();
+
+		_moveTimer = 0.f;
+	}	
+}
+
+characters::DIRECTION Characters::getDir()
+{
+	return _dir;
+}
+
+void Characters::setMoveInterval(sec interval)
+{
+	_moveInterval = interval;
+}
+
+drawer::ConsoleSymbolData Characters::getAppearance()
+{
+	return _appearance;
+}
+
+
+bool Characters::isCollusion(DIRECTION d)
+{
+	using namespace game_scene;
+
+	unsigned short heroX = _pos.x;
+	unsigned short heroY = _pos.y;
+
+	if (UP == d && (WALL == _blocks[heroY - 1][heroX] || DOOR == _blocks[heroY - 1][heroX])) return true;
+	else if (DOWN == d && (WALL == _blocks[heroY + 1][heroX] || DOOR == _blocks[heroY + 1][heroX])) return true;
+	else if (LEFT == d && (WALL == _blocks[heroY][heroX - 1] || DOOR == _blocks[heroY][heroX - 1])) return true;
+	else if (RIGHT == d && (WALL == _blocks[heroY][heroX + 1] || DOOR == _blocks[heroY][heroX + 1])) return true;
 
 	return false;
 }
 
-Characters::Characters(const char blocks[][gamefield::GAMEFIELD_COLUMN])
+inline void Characters::fillRow(const char blocks[][gamefield::GAMEFIELD_COLUMN], int row)
+{
+	for (int i = 0; i < gamefield::GAMEFIELD_COLUMN; i++)
+	{
+		_blocks[row][i] = blocks[row][i];
+	}
+}
+
+Characters::Characters(const char blocks[][gamefield::GAMEFIELD_COLUMN]) :
+	_timer(0.0f), _moveTimer(0.0f)
 {
 	for (int i = 0; i < gamefield::GAMEFIELD_ROW; i++)
 	{
-		for (int j = 0; j < gamefield::GAMEFIELD_COLUMN; j++)
-		{
-			this->blocks[i][j] = blocks[i][j];
-		}
+		fillRow(blocks,i);
 	}
 }

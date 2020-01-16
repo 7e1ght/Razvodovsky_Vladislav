@@ -4,86 +4,95 @@
 #include <time.h>
 
 #include "Game.h"
+#include "Support.h"
+#include "Scatter.h" 
 
 using namespace gamefield;
 
-bool Game::init()
+bool Game::update(sec delta)
 {
-	clock_t start = clock();
-	float  time = 0.f;
+	using namespace game_scene;
 
-	while (true)
+	_timer += delta;
+
+	if (_timer > 5.f)
 	{
-		mainHero->move();
-		blinky->move();
+		std::shared_ptr<Mode> b(new Scatter(20.f, characters::Position{ 30, 0 }));
+		std::shared_ptr<Mode> p(new Scatter(20.f, characters::Position{ 0, 0 }));
 
-		unsigned short heroX = mainHero->getPosition().x;
-		unsigned short heroY = mainHero->getPosition().y;
+		_blinky->setMode( b );
+		_pinky->setMode( p );
 
-		if (foods[heroY][heroX] == FOOD)
+		_timer = -1111111.f;
+	}
+
+	if (!(_mainHero && _drawer)) return false;
+
+	_mainHero->move(delta);
+	_blinky->move(delta);
+	_pinky->move(delta);
+
+	unsigned short heroX = _mainHero->getPosition().x;
+	unsigned short heroY = _mainHero->getPosition().y;
+
+	if (_foods[heroY][heroX] == FOOD)
+	{
+		_score += 5;
+		_foods[heroY][heroX] = SPACE;
+	}
+	else if (_foods[heroY][heroX] == ENERGYZE)
+	{
+		_score += 15;
+		_foods[heroY][heroX] = SPACE;
+	}
+
+	std::string scoreStr = "Score: " + std::to_string(_score);
+
+	_drawer->setText(scoreStr.c_str(), 0, 0, drawer::LIGHT_GRAY, drawer::BLACK);
+
+	for (int i = 0; i < GAMEFIELD_COLUMN; i++)
+	{
+		for (int j = 0; j < GAMEFIELD_ROW; j++)
 		{
-			score += 5;
-			foods[heroY][heroX] = SPACE;
+			if (_blocks[i][j] == SPACE || _foods[i][j] == SPACE)
+				_drawer->setChar(j, i + 1, SPACE_APPEARANCE);
+
+			if (_blocks[i][j] == WALL)
+				_drawer->setChar(j, i + 1, WALL_APPREARANCE);
+			else if (_blocks[i][j] == DOOR)
+				_drawer->setChar(j, i + 1, DOOR_APPEARANCE);
+
+			if (_foods[i][j] == FOOD)
+				_drawer->setChar(j, i + 1, FOOD_APPEARANCE);
+			else
+				if (_foods[i][j] == ENERGYZE)
+					_drawer->setChar(j, i + 1, ENERGYZE_APPEARANCE);
+
+			if (i == heroY && j == heroX)
+				_drawer->setChar(j, i + 1, _mainHero->getAppearance());
+
+			if (i == _blinky->getPosition().y && j == _blinky->getPosition().x)
+				_drawer->setChar(j, i + 1, _blinky->getAppearance());
+
+			if (i == _pinky->getPosition().y && j == _pinky->getPosition().x)
+				_drawer->setChar(j, i + 1, _pinky->getAppearance());
 		}
-		else if (foods[heroY][heroX] == ENERGYZE)
-		{
-			score += 15;
-			foods[heroY][heroX] = SPACE;
-		}
-
-		std::string scoreStr = "Score: " + std::to_string(score);
-
-		drawer->setText(scoreStr.c_str(), 0, 0, Drawer::LightGray, Drawer::Black);
-
-		for (int i = 0; i < GAMEFIELD_COLUMN; i++)
-		{
-			for (int j = 0; j < GAMEFIELD_ROW; j++)
-			{
-				if (blocks[i][j] == SPACE || foods[i][j] == SPACE)
-					drawer->setChar(0, j, i + 1, Drawer::Black, Drawer::Black);
-
-				if (blocks[i][j] == WALL)
-					drawer->setChar(0, j, i + 1, Drawer::Black, Drawer::Blue);
-				else if (blocks[i][j] == DOOR)
-					drawer->setChar(0, j, i + 1, Drawer::Black, Drawer::LightMagenta);
-
-				if (foods[i][j] == FOOD)
-					drawer->setChar('.', j, i + 1, Drawer::Yellow, Drawer::Black);
-				else if (foods[i][j] == ENERGYZE)
-					drawer->setChar('o', j, i + 1, Drawer::Yellow, Drawer::Black);
-
-				if (i == heroY && j == heroX)
-					drawer->setChar('C', j, i + 1, Drawer::Yellow, Drawer::Black);
-
-				if (i == (short)blinky->getPosition().y && j == (short)blinky->getPosition().x)
-					drawer->setChar('B', j, i + 1, Drawer::Red, Drawer::Black);
-			}
-		}
-
-		drawer->draw();
-
-		time = float(clock() - start) / CLOCKS_PER_SEC;
-		start = clock();
 	}
 
 	return true;
 }
 
-char Game::getBlock(unsigned short x, unsigned short y)
+Game::Game(std::shared_ptr<Drawer> d) : Scene(d), _score(0), _timer(0.f)
 {
-	return blocks[x][y];
-}
-
-Game::Game(std::shared_ptr<Drawer::Drawer> d) : Scene(d), score(0), timer(0.f)
-{
+	using namespace game_scene;
 	std::ifstream in("map.txt");
 
 	for (int i = 0; i < GAMEFIELD_COLUMN; i++)
 	{
 		for (int j = 0; j < GAMEFIELD_ROW; j++)
 		{
-			blocks[i][j] = SPACE;
-			foods[i][j] = SPACE;
+			_blocks[i][j] = SPACE;
+			_foods[i][j] = SPACE;
 		}
 	}
 
@@ -96,9 +105,9 @@ Game::Game(std::shared_ptr<Drawer::Drawer> d) : Scene(d), score(0), timer(0.f)
 				unsigned short c;
 				in >> c;
 				if (c == WALL || c == DOOR || c == SPACE)
-					blocks[i][j] = c;
+					_blocks[i][j] = c;
 				else
-					foods[i][j] = c;
+					_foods[i][j] = c;
 			}
 		}
 	}
@@ -109,6 +118,7 @@ Game::Game(std::shared_ptr<Drawer::Drawer> d) : Scene(d), score(0), timer(0.f)
 
 	in.close();
 
-	mainHero = std::make_shared<Player>(blocks);
-	blinky = std::make_shared<Blinky>(blocks, mainHero);
+	_mainHero = std::make_shared<Player>(_blocks);
+	_blinky = std::make_shared<Blinky>(_blocks, _mainHero);
+	_pinky = std::make_shared<Pinky>(_blocks, _mainHero);
 }

@@ -1,12 +1,17 @@
 #pragma once
 #include "Characters.h"
+#include "Support.h"
 
 class Player : public Characters
 {
 private:
-	DIRECTION nextDir;
+	characters::DIRECTION _nextDir;
+
+	// for non-nest
+	void changeDirection();
+
+	void calcDirection() override;
 public:
-	void move();
 
 	Player(const char blocks[][gamefield::GAMEFIELD_COLUMN]);
 };

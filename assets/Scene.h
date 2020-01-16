@@ -2,13 +2,14 @@
 #include <memory>
 
 #include "Drawer.h"
+#include "Support.h"
 
 class Scene
 {
 protected:
-	std::shared_ptr<Drawer::Drawer> drawer;
+	std::shared_ptr<Drawer> _drawer;
 public:
-	virtual bool init() = 0;
-	Scene(std::shared_ptr<Drawer::Drawer> d);
+	virtual bool update(sec delta) = 0;
+	Scene(std::shared_ptr<Drawer> d);
 };
 
