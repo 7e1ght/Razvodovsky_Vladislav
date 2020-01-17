@@ -80,19 +80,21 @@ bool Characters::isCollusion(DIRECTION d)
 	return false;
 }
 
-inline void Characters::fillRow(const char blocks[][gamefield::GAMEFIELD_COLUMN], int row)
+
+Characters::Characters(char** blocks) :
+	_timer(0.0f), _moveTimer(0.0f), _blocks(blocks)
 {
-	for (int i = 0; i < gamefield::GAMEFIELD_COLUMN; i++)
-	{
-		_blocks[row][i] = blocks[row][i];
-	}
 }
 
-Characters::Characters(const char blocks[][gamefield::GAMEFIELD_COLUMN]) :
-	_timer(0.0f), _moveTimer(0.0f)
+Characters::~Characters()
 {
-	for (int i = 0; i < gamefield::GAMEFIELD_ROW; i++)
+	for (int i = 0; i < gamefield::GAMEFIELD_ROW; ++i)
 	{
-		fillRow(blocks,i);
+		for (int j = 0; gamefield::GAMEFIELD_COLUMN > j; ++j)
+		{
+			delete[] _blocks[i];
+		}
 	}
+
+	delete[] _blocks;
 }

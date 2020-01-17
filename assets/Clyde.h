@@ -1,10 +1,11 @@
 #pragma once
 #include "Ghost.h"
-#include "Support.h"
 #include "Player.h"
-#include "PinkyChase.h"
+#include "Support.h"
 
-class Pinky :
+#include <memory>
+
+class Clyde :
 	public Ghost
 {
 public:
@@ -12,6 +13,6 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Pinky(char** blocks, std::shared_ptr<Player> player);
+	Clyde(char** blocks, std::shared_ptr<Player> player);
 };
 

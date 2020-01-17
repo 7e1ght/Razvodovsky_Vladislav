@@ -16,11 +16,23 @@ protected:
 
 	sec _lastCall;
 
+	bool _isInitialized;
+
 	float calcDistanceToTargetPoint(characters::Position pos);
 	void calcDirection() override;
 public:
-	void setMode(std::shared_ptr<Mode> mode);
+	void setStdMode();
 
-	Ghost(const char blocks[][gamefield::GAMEFIELD_COLUMN]);
+	virtual void resetAppearance() = 0;
+
+	void setMode(std::shared_ptr<Mode> m);
+
+	bool isInitialized();
+	void resetAll();
+
+	void init();
+
+	Ghost(char** blocks);
+	virtual ~Ghost() {}
 };
 

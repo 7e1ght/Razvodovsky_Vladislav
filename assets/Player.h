@@ -12,7 +12,8 @@ private:
 
 	void calcDirection() override;
 public:
+	void resetPosition() override;
 
-	Player(const char blocks[][gamefield::GAMEFIELD_COLUMN]);
+	Player(char** blocks);
 };
 

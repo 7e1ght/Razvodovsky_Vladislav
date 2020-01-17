@@ -38,11 +38,18 @@ void Player::calcDirection()
 	}
 }
 
-Player::Player(const char blocks[][gamefield::GAMEFIELD_COLUMN]) :
+void Player::resetPosition()
+{
+	_pos = characters::PLAYER_START_POSITION;
+	_dir = characters::STOP;
+	_nextDir = characters::STOP;
+}
+
+Player::Player(char** blocks) :
 	Characters(blocks), _nextDir(characters::STOP)
 {
-	_pos = { characters::PLAYER_START_X, characters::PLAYER_START_Y };
+	_pos = characters::PLAYER_START_POSITION;
 	_appearance = characters::PLAYER_APPREARANCE;
 	_dir = characters::STOP;
-	_moveInterval = 0.08f;
+	_moveInterval = 0.250f;
 }

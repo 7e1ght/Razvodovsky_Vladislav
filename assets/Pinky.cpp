@@ -1,13 +1,25 @@
 #include "Pinky.h"
 
-Pinky::Pinky(const char blocks[][gamefield::GAMEFIELD_COLUMN], std::shared_ptr<Player> player) : 
+void Pinky::resetPosition()
+{
+	_pos = characters::PINKY_START_POSITION;
+}
+
+void Pinky::resetAppearance()
+{
+	_appearance = characters::PINKY_APPREARANCE;
+}
+
+Pinky::Pinky(char** blocks, std::shared_ptr<Player> player) :
 	Ghost(blocks)
 {
-	_pos = { characters::BLINKY_START_X+1, characters::BLINKY_START_Y };
+	_pos = characters::PINKY_START_POSITION;
 	_appearance = characters::PINKY_APPREARANCE;
 	_dir = characters::STOP;
-	_moveInterval = 1.0f;
+	_moveInterval = 0.5f;
 
 	_stdMode.reset(new PinkyChase(mode::MAX_DURATION, player));
 	_mode = _stdMode;
+
+	_isInitialized = true;
 }

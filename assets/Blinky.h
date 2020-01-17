@@ -11,6 +11,9 @@ class Blinky :
 {
 public:
 
-	Blinky(const char blocks[][gamefield::GAMEFIELD_COLUMN], std::shared_ptr<Player> player);
+	void resetPosition() override;
+	void resetAppearance() override;
+
+	Blinky(char** blocks, std::shared_ptr<Player> player);
 };
 

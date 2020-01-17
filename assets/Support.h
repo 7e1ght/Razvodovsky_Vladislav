@@ -3,11 +3,6 @@
 
 typedef float sec;
 
-namespace mode
-{
-	const float MAX_DURATION = FLT_MAX;
-}
-
 namespace drawer
 {
 
@@ -43,13 +38,6 @@ enum ConsoleColor
 
 }
 
-namespace gamefield
-{
-
-const unsigned short GAMEFIELD_ROW = 25;
-const unsigned short GAMEFIELD_COLUMN = 25;
-
-}
 
 namespace characters
 {
@@ -61,6 +49,16 @@ struct Position
 	short x;
 	short y;
 
+	Position operator-(const Position& pos)
+	{
+		return Position(x - pos.x, y - pos.y);
+	}
+
+	Position operator*(const int& num)
+	{
+		return Position(x * num, y * num);
+	}
+
 	Position(short xx, short yy) : x(xx), y(yy)
 	{
 
@@ -71,17 +69,60 @@ struct Position
 	}
 };
 
-const short PLAYER_START_X = 12;
-const short PLAYER_START_Y = 19;
 
-const short BLINKY_START_X = 11;
-const short BLINKY_START_Y = 9;
+
+
+const Position PLAYER_START_POSITION{ 12, 19 };
+
+//const Position BLINKY_START_POSITION{ 11, 9 };
+//const Position CLYDE_START_POSITION{ 14, 12 };
+//const Position PINKY_START_POSITION{ 12, 12 };
+//const Position INKY_START_POSITION{ 10, 12 };
+
+const Position BLINKY_START_POSITION{ 11, 9 };
+const Position CLYDE_START_POSITION{ 12, 9 };
+const Position PINKY_START_POSITION{ 13, 9 };
+const Position INKY_START_POSITION{ 14, 9 };
 
 const drawer::ConsoleSymbolData PLAYER_APPREARANCE { 'C', drawer::YELLOW, drawer::BLACK };
 const drawer::ConsoleSymbolData BLINKY_APPREARANCE { 'B', drawer::LIGHT_RED, drawer::BLACK };
 const drawer::ConsoleSymbolData INKY_APPREARANCE { 'I', drawer::LIGHT_CYAN, drawer::BLACK };
 const drawer::ConsoleSymbolData CLYDE_APPREARANCE {'D', drawer::BROWN, drawer::BLACK};
 const drawer::ConsoleSymbolData PINKY_APPREARANCE {'P', drawer::LIGHT_MAGENDA, drawer::BLACK};
+
+}
+
+namespace gamefield
+{
+
+const unsigned short GAMEFIELD_ROW = 25;
+const unsigned short GAMEFIELD_COLUMN = 25;
+
+const characters::Position DOOR_START{11, 10};
+const unsigned DOOR_SIZE = 3;
+}
+
+namespace mode
+{
+	const float MAX_DURATION = FLT_MAX;
+
+	const characters::Position INKY_SCATTER_POSITION{ 30, 30 };
+	const characters::Position BLINKY_SCATTER_POSITION{ 30, 0 };
+	const characters::Position CLYDE_SCATTER_POSITION{ 0, 30 };
+	const characters::Position PINKY_SCATTER_POSITION{ 0, 0 };
+}
+
+namespace main_menu
+{
+	const unsigned LOGO_WIDTH = 29;
+	const unsigned LOGO_HEIGHT = 5;
+
+	const char ENTER_KEY_CODE = 13;
+
+	//const bool LOGO[LOGO_HEIGHT][LOGO_WIDTH] =
+	//{
+	//	{1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,0,0,0,1,0,0,1,0,0,1}
+	//}
 }
 
 namespace scene
@@ -91,7 +132,9 @@ enum SCENE_ID
 {
 	BEFORE_BIG_BANG,
 	GAME, 
-	LOSE
+	LOSE,
+	SCENE_ERROR,
+	MAIN_MENU
 };
 
 }
@@ -105,6 +148,16 @@ namespace game_scene
 		FOOD,
 		ENERGYZE,
 		DOOR
+	};
+
+	enum STATE
+	{
+		LOSE, 
+		WIN,
+		PLAY,
+		PAUSE,
+		GHOST_EAT_ME,
+		RESET_GAME
 	};
 
 	const drawer::ConsoleSymbolData WALL_APPREARANCE { 0, drawer::BLACK, drawer::BLUE };

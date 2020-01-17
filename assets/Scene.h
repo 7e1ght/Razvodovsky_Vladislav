@@ -9,7 +9,9 @@ class Scene
 protected:
 	std::shared_ptr<Drawer> _drawer;
 public:
-	virtual bool update(sec delta) = 0;
+	virtual scene::SCENE_ID update(sec delta) = 0;
+
 	Scene(std::shared_ptr<Drawer> d);
+	virtual ~Scene() {}
 };
 

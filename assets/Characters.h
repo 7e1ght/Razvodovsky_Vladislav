@@ -3,15 +3,14 @@
 
 class Characters
 {
-private:	
-	void fillRow(const char blocks[][gamefield::GAMEFIELD_COLUMN], int row);
+private:
 	void changePosition();
 
 	sec _moveTimer;
 
 protected:
 	sec _timer;
-	char _blocks[gamefield::GAMEFIELD_ROW][gamefield::GAMEFIELD_COLUMN];
+	char** _blocks;
 
 	drawer::ConsoleSymbolData _appearance;
 	sec _moveInterval;
@@ -29,9 +28,11 @@ public:
 
 	characters::DIRECTION getDir();
 
+	virtual void resetPosition() = 0;
+
 	void setMoveInterval(sec interval);
 	drawer::ConsoleSymbolData getAppearance();
 
-	Characters(const char blocks[][gamefield::GAMEFIELD_COLUMN]);
-	virtual ~Characters() {}
+	Characters(char** blocks);
+	virtual ~Characters();
 };
