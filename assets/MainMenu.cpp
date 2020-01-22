@@ -16,52 +16,57 @@ inline void MainMenu::enterPressed()
 	}
 }
 
-scene::SCENE_ID MainMenu::update(sec delta)
+scene::SCENE_ID MainMenu::update()
 {
-	if (_drawer == nullptr) return scene::SCENE_ERROR;
+	bool isEnterPressed = false;
 
-	std::string startStr = "   Start game";
-	std::string quitStr = "   Quit";
-
-	if (_kbhit())
+	while (isEnterPressed == false)
 	{
-		switch (_getch())
+		std::string startStr = "   Start game";
+		std::string quitStr = "   Quit";
+
+		if (_kbhit())
 		{
-		case 'W': case 'w':
-			_currentChoose = CHOOSE::START_GAME;
+			switch (_getch())
+			{
+			case 'W': case 'w':
+				_currentChoose = CHOOSE::START_GAME;
+				break;
+			case 'S': case 's':
+				_currentChoose = CHOOSE::QUIT;
+				break;
+			case main_menu::ENTER_KEY_CODE:
+				enterPressed();
+				isEnterPressed = true;
+				break;
+			}
+		}
+
+		switch (_currentChoose)
+		{
+		case CHOOSE::START_GAME:
+			startStr[0] = '-';
+			startStr[1] = '>';
 			break;
-		case 'S': case 's':
-			_currentChoose = CHOOSE::QUIT;
+		case CHOOSE::QUIT:
+			quitStr[0] = '-';
+			quitStr[1] = '>';
 			break;
-		case main_menu::ENTER_KEY_CODE:
-			enterPressed();
+
+		default:
 			break;
 		}
+
+		_drawer->setText(startStr.c_str(), 10, 10, drawer::LIGHT_GRAY, drawer::BLACK);
+		_drawer->setText(quitStr.c_str(), 10, 12, drawer::LIGHT_GRAY, drawer::BLACK);
+
+		_drawer->draw();
 	}
-
-	switch (_currentChoose)
-	{
-	case CHOOSE::START_GAME:
-		startStr[0] = '-';
-		startStr[1] = '>';
-		break;
-	case CHOOSE::QUIT:
-		quitStr[0] = '-';
-		quitStr[1] = '>';
-		break;
-
-	default:
-		break;
-	}
-
-	_drawer->clearCanvas();
-	_drawer->setText(startStr.c_str(), 10, 10, drawer::LIGHT_GRAY, drawer::BLACK);
-	_drawer->setText(quitStr.c_str(), 10, 12, drawer::LIGHT_GRAY, drawer::BLACK);
 
 	return _returnScene;
 }
 
-MainMenu::MainMenu(std::shared_ptr<Drawer> d) : Scene(d), _returnScene(scene::MAIN_MENU), _currentChoose(CHOOSE::START_GAME)
+MainMenu::MainMenu(std::unique_ptr<Drawer>& d) : Scene(d), _returnScene(scene::MAIN_MENU), _currentChoose(CHOOSE::START_GAME)
 {
 
 }

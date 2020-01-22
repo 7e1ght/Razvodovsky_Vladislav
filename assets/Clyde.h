@@ -13,6 +13,6 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Clyde(char** blocks, std::shared_ptr<Player> player);
+	Clyde(std::shared_ptr<Characters> player);
 };
 

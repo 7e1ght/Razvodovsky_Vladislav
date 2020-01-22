@@ -1,4 +1,5 @@
 #include "Ghost.h"
+#include "Support.h"
 
 float Ghost::calcDistanceToTargetPoint(characters::Position pos)
 {
@@ -7,10 +8,12 @@ float Ghost::calcDistanceToTargetPoint(characters::Position pos)
 
 void Ghost::calcDirection()
 {
+
+
 	if (_isInitialized)
 	{
-		if (_mode && _mode->isOver()) _mode = _stdMode;
-		if (_mode)
+		if (_mode != nullptr && _mode->isOver()) _mode = _stdMode;
+		if (_mode != nullptr)
 		{
 			_targetPoint = _mode->modeTurn(_timer - _lastCall);
 			_lastCall = _timer;
@@ -60,7 +63,6 @@ void Ghost::calcDirection()
 		}
 
 		_dir = minDistanceDirection;
-		_lastPosition = _pos;
 	}
 }
 
@@ -92,7 +94,9 @@ void Ghost::init()
 	_isInitialized = true;
 }
 
-Ghost::Ghost(char** blocks) :
-	Characters(blocks), _targetPoint{ -1, -1 }, _lastPosition{-1, -1}, _stdMode(nullptr), _mode(nullptr), _lastCall(0.0f), _isInitialized(false)
+Ghost::Ghost(characters::Position pos, drawer::ConsoleSymbolData a, sec interval) :
+	Characters(pos, a, interval), 
+	_targetPoint{ -1, -1 }, _stdMode(nullptr),
+	_mode(nullptr), _lastCall(0.0f), _isInitialized(false)
 {
 }

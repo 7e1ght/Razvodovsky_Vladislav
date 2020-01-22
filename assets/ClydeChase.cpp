@@ -31,7 +31,7 @@ inline void ClydeChase::targetPoint(characters::Position& p)
 	else p = mode::CLYDE_SCATTER_POSITION;
 }
 
-ClydeChase::ClydeChase(sec duraction, std::shared_ptr<Player> player, std::shared_ptr<Clyde> clyde) :
+ClydeChase::ClydeChase(sec duraction, std::shared_ptr<Characters> player, Characters* clyde) :
 	Mode(duraction), _player(player), _clyde(clyde)
 {
 

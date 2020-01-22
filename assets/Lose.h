@@ -19,7 +19,7 @@ private:
 	CHOOSE _currentChoose;
 	void enterPressed();
 public:
-	scene::SCENE_ID update(sec delta);
+	scene::SCENE_ID update();
 
-	Lose(std::shared_ptr<Drawer> d);
+	Lose(std::unique_ptr<Drawer>& d);
 };

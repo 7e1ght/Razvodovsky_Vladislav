@@ -11,14 +11,9 @@ void Inky::resetAppearance()
 	_appearance = characters::INKY_APPREARANCE;
 }
 
-Inky::Inky(char** blocks, std::shared_ptr<Player> player, std::shared_ptr<Blinky> blinky) :
-	Ghost(blocks)
+Inky::Inky(std::shared_ptr<Characters> player, std::shared_ptr<Characters> blinky) :
+	Ghost(characters::INKY_START_POSITION, characters::INKY_APPREARANCE, 0.5f)
 {
-	_pos = characters::INKY_START_POSITION;
-	_appearance = characters::INKY_APPREARANCE;
-	_dir = characters::STOP;
-	_moveInterval = 0.5f;
-
 	_stdMode.reset(new InkyChase(mode::MAX_DURATION, player, blinky));
 	_mode = _stdMode;
 

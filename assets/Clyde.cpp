@@ -11,17 +11,12 @@ void Clyde::resetAppearance()
 	_appearance = characters::CLYDE_APPREARANCE;
 }
 
-Clyde::Clyde(char** blocks, std::shared_ptr<Player> player) :
-	Ghost(blocks)
+Clyde::Clyde(std::shared_ptr<Characters> player) :
+	Ghost(characters::CLYDE_START_POSITION, characters::CLYDE_APPREARANCE, 0.5f)
 {
-	_pos = characters::CLYDE_START_POSITION;
-	_appearance = characters::CLYDE_APPREARANCE;
-	_dir = characters::STOP;
-	_moveInterval = 0.5f;
 
-	std::shared_ptr<Clyde> c(this);
 
-	_stdMode.reset(new ClydeChase(mode::MAX_DURATION, player, c));
+	_stdMode.reset(new ClydeChase(mode::MAX_DURATION, player, this));
 	_mode = _stdMode;
 
 	_isInitialized = true;

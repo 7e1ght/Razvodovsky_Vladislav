@@ -13,6 +13,6 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Inky(char** blocks, std::shared_ptr<Player> player, std::shared_ptr<Blinky> blinky);
+	Inky(std::shared_ptr<Characters> player, std::shared_ptr<Characters> blinky);
 };
 

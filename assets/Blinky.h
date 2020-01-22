@@ -14,6 +14,6 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Blinky(char** blocks, std::shared_ptr<Player> player);
+	Blinky(std::shared_ptr<Characters> player);
 };
 

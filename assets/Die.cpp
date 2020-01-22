@@ -3,28 +3,27 @@
 #include <fstream>
 #include <iostream>
 
-scene::SCENE_ID Die::update(sec delta)
+scene::SCENE_ID Die::update()
 {
-
-	if (_drawer == nullptr) return scene::SCENE_ERROR;
-
 	for (int i = 0; i < drawer::CANVAS_ROW; ++i)
 	{
 		for (int j = 0; j < drawer::CANVAS_COLUMN; ++j)
 		{
 			if (_screen[i][j] == false)
 			{
-				_drawer->setChar(j, i, game_scene::SPACE_APPEARANCE);
+				_drawer->setChar(i, j, game_scene::SPACE_APPEARANCE);
 			}
 			else
 			{
-				_drawer->setChar(0, j, i, drawer::BLACK, drawer::RED);
+				_drawer->setChar(0, i, j, drawer::BLACK, drawer::RED);
 			}
 		}
 	}
+
+	return scene::BEFORE_BIG_BANG;
 }
 
-Die::Die(std::shared_ptr<Drawer> d) : Scene(d)
+Die::Die(std::unique_ptr<Drawer>& d) : Scene(d)
 {
 	std::ifstream in("die.txt");
 
@@ -42,6 +41,6 @@ Die::Die(std::shared_ptr<Drawer> d) : Scene(d)
 	}
 	else
 	{
-		std::cout << "Can not open file" << std::endl;
+		std::cerr << "Can not open file" << std::endl;
 	}
 }

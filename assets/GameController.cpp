@@ -13,11 +13,10 @@ void GameController::startGame()
 {
 	scene::SCENE_ID currentScene = scene::MAIN_MENU, lastScene = scene::BEFORE_BIG_BANG;
 
-	sec delta = 0.f, start;
-
 	while (true)
 	{
-		start = clock();
+		_drawer->clearCanvas();
+		
 		switch (currentScene)
 		{
 		case scene::MAIN_MENU:
@@ -26,7 +25,7 @@ void GameController::startGame()
 				_currentScene.reset(new MainMenu(_drawer));
 				lastScene = scene::MAIN_MENU;
 			}
-			currentScene = _currentScene->update(delta);
+			currentScene = _currentScene->update();
 			break;
 		case scene::GAME:
 			if (currentScene != lastScene)
@@ -34,8 +33,7 @@ void GameController::startGame()
 				_currentScene.reset(new Game(_drawer));
 				lastScene = scene::GAME;
 			}
-			currentScene =  _currentScene->update(delta);
-
+			currentScene =  _currentScene->update();
 			break;
 		case scene::LOSE:
 			if (currentScene != lastScene)
@@ -43,20 +41,19 @@ void GameController::startGame()
 				_currentScene.reset(new Lose(_drawer));
 				lastScene = scene::LOSE;
 			}
-			currentScene = _currentScene->update(delta);
+
+			currentScene = _currentScene->update();
 
 			break;
 		default:
 			break;
 		}
-
-		_drawer->draw();
-		delta = (clock() - start) / CLOCKS_PER_SEC;
 	}
+
 }
 
-GameController::GameController() : 
-	_drawer(new Drawer()), _currentScene(nullptr)
+GameController::GameController() :
+	_drawer(new Drawer), _currentScene(nullptr)
 {
 
 }

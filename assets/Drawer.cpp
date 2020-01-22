@@ -38,27 +38,27 @@ void Drawer::clearCanvas()
 
 void Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char backgroud)
 {
-	_canvas[x][y].symbol = c;
-	_canvas[x][y].foreground = foreground;
-	_canvas[x][y].background = backgroud;
+	_canvas[y][x].symbol = c;
+	_canvas[y][x].foreground = foreground;
+	_canvas[y][x].background = backgroud;
 }
 
-void Drawer::setChar(unsigned short x, unsigned short y, ConsoleSymbolData apprearance)
+void Drawer::setChar(unsigned short x, unsigned short y, const ConsoleSymbolData& apprearance)
 {
-	_canvas[x][y].symbol = apprearance.symbol;
-	_canvas[x][y].foreground = apprearance.foreground;
-	_canvas[x][y].background = apprearance.background;
+	_canvas[y][x].symbol = apprearance.symbol;
+	_canvas[y][x].foreground = apprearance.foreground;
+	_canvas[y][x].background = apprearance.background;
 }
 
 void Drawer::setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
 {
 	while (*text)
-		setChar(*(text++), x++, y, foreground, background);
+		setChar(*(text++), y, x++, foreground, background);
 }
 
 inline void Drawer::outSymbolDataRow(int row)
 {
-	for (int j = 0; CANVAS_ROW > j ; j++)
+	for (int j = 0; CANVAS_COLUMN > j ; ++j)
 	{
 		setCursorPos(row, j);
 
@@ -69,7 +69,7 @@ inline void Drawer::outSymbolDataRow(int row)
 
 void Drawer::draw()
 {
-	for (int i = 0; CANVAS_COLUMN > i ; i++)
+	for (int i = 0; CANVAS_ROW > i ; ++i)
 	{
 		outSymbolDataRow(i);
 	}

@@ -9,8 +9,8 @@ class InkyChase :
 {
 
 private:
-	std::shared_ptr<Player> _player;
-	std::shared_ptr<Blinky> _blinky;
+	std::shared_ptr<Characters> _player;
+	std::shared_ptr<Characters> _blinky;
 
 	characters::Position calcTargetPoint();
 
@@ -18,6 +18,6 @@ private:
 	void targetPosition(characters::Position& p);
 public:
 
-	InkyChase(sec duraction, std::shared_ptr<Player> player, std::shared_ptr<Blinky> blinky);
+	InkyChase(sec duraction, std::shared_ptr<Characters> player, std::shared_ptr<Characters> blinky);
 };
 

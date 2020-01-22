@@ -16,7 +16,7 @@ private:
 public:
 	void clearCanvas();
 
-	void setChar(unsigned short x, unsigned short y, drawer::ConsoleSymbolData apprearance);
+	void setChar(unsigned short x, unsigned short y, const drawer::ConsoleSymbolData& apprearance);
 	void setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background);
 
 	void setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background);

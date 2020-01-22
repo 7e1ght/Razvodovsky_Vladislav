@@ -20,8 +20,8 @@ private:
 	CHOOSE _currentChoose;
 	void enterPressed();
 public:
-	scene::SCENE_ID update(sec delta);
+	scene::SCENE_ID update();
 
-	MainMenu(std::shared_ptr<Drawer> d);
+	MainMenu(std::unique_ptr<Drawer>& d);
 };
 

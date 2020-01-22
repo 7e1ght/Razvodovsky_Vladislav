@@ -29,7 +29,7 @@ characters::Position PinkyChase::calcTargetPoint()
 	}
 }
 
-PinkyChase::PinkyChase(sec duraction, std::shared_ptr<Player> player) :
+PinkyChase::PinkyChase(sec duraction, std::shared_ptr<Characters> player) :
 	Mode(duraction), _player(player)
 {
 

@@ -10,8 +10,8 @@ class ClydeChase :
 	public Mode
 {
 private:
-	std::shared_ptr<Player> _player;
-	std::shared_ptr<Clyde> _clyde;
+	std::shared_ptr<Characters> _player;
+	Characters* _clyde;
 
 	characters::Position calcTargetPoint();
 	void targetPoint(characters::Position& p);
@@ -19,6 +19,6 @@ private:
 	float calcDistance();
 public:
 
-	ClydeChase(sec duraction, std::shared_ptr<Player> player, std::shared_ptr<Clyde> clyde);
+	ClydeChase(sec duraction, std::shared_ptr<Characters> player, Characters* clyde);
 };
 

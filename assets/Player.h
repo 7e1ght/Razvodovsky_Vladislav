@@ -7,13 +7,15 @@ class Player : public Characters
 private:
 	characters::DIRECTION _nextDir;
 
+	void calcDirection() override;
+
 	// for non-nest
 	void changeDirection();
 
-	void calcDirection() override;
 public:
 	void resetPosition() override;
 
-	Player(char** blocks);
+	Player();
+	~Player() {}
 };
 

@@ -39,11 +39,17 @@ void Characters::move(sec delta)
 
 	_moveTimer += delta;
 
+	calcDirection();
+
 	if (_moveTimer >= _moveInterval)
 	{
-		calcDirection();
 
-		if (!isCollusion(_dir)) changePosition();
+		if (isCollusion(_dir) == false) 
+		{ 
+			_lastPosition = _pos;
+			changePosition();
+		}
+			
 
 		_moveTimer = 0.f;
 	}	
@@ -64,7 +70,6 @@ drawer::ConsoleSymbolData Characters::getAppearance()
 	return _appearance;
 }
 
-
 bool Characters::isCollusion(DIRECTION d)
 {
 	using namespace game_scene;
@@ -72,29 +77,23 @@ bool Characters::isCollusion(DIRECTION d)
 	unsigned short heroX = _pos.x;
 	unsigned short heroY = _pos.y;
 
-	if (UP == d && (WALL == _blocks[heroY - 1][heroX] || DOOR == _blocks[heroY - 1][heroX])) return true;
-	else if (DOWN == d && (WALL == _blocks[heroY + 1][heroX] || DOOR == _blocks[heroY + 1][heroX])) return true;
-	else if (LEFT == d && (WALL == _blocks[heroY][heroX - 1] || DOOR == _blocks[heroY][heroX - 1])) return true;
-	else if (RIGHT == d && (WALL == _blocks[heroY][heroX + 1] || DOOR == _blocks[heroY][heroX + 1])) return true;
+	bool isBlock = false;
 
-	return false;
+	if (UP == d && (WALL == BLOCK_MAP[heroY - 1][heroX] || DOOR == BLOCK_MAP[heroY - 1][heroX])) 
+		isBlock = true;
+	else if (DOWN == d && (WALL == BLOCK_MAP[heroY + 1][heroX] || DOOR == BLOCK_MAP[heroY + 1][heroX]))
+		isBlock = true;
+	else if (LEFT == d && (WALL == BLOCK_MAP[heroY][heroX - 1] || DOOR == BLOCK_MAP[heroY][heroX - 1])) 
+		isBlock = true;
+	else if (RIGHT == d && (WALL == BLOCK_MAP[heroY][heroX + 1] || DOOR == BLOCK_MAP[heroY][heroX + 1])) 
+		isBlock = true;
+
+	return isBlock;
 }
 
 
-Characters::Characters(char** blocks) :
-	_timer(0.0f), _moveTimer(0.0f), _blocks(blocks)
+Characters::Characters(characters::Position pos, drawer::ConsoleSymbolData a, sec interval) : 
+	_timer(0.0f), _moveTimer(0.0f), _pos(pos), _appearance(a), _dir(characters::STOP), _moveInterval(interval),
+	_lastPosition{-1, -1}
 {
-}
-
-Characters::~Characters()
-{
-	for (int i = 0; i < gamefield::GAMEFIELD_ROW; ++i)
-	{
-		for (int j = 0; gamefield::GAMEFIELD_COLUMN > j; ++j)
-		{
-			delete[] _blocks[i];
-		}
-	}
-
-	delete[] _blocks;
 }

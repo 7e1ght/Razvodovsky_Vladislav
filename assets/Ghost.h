@@ -12,7 +12,6 @@ protected:
 	std::shared_ptr<Mode> _mode;
 
 	characters::Position _targetPoint;
-	characters::Position _lastPosition;
 
 	sec _lastCall;
 
@@ -32,7 +31,7 @@ public:
 
 	void init();
 
-	Ghost(char** blocks);
+	Ghost(characters::Position pos, drawer::ConsoleSymbolData a, sec interval);
 	virtual ~Ghost() {}
 };
 

@@ -39,7 +39,7 @@ inline void InkyChase::targetPosition(characters::Position& p)
 
 }
 
-InkyChase::InkyChase(sec duraction, std::shared_ptr<Player> player, std::shared_ptr<Blinky> blinky) :
+InkyChase::InkyChase(sec duraction, std::shared_ptr<Characters> player, std::shared_ptr<Characters> blinky) :
 	Mode(duraction), _player(player), _blinky(blinky)
 {
 }

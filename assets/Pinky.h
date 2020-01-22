@@ -12,6 +12,6 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Pinky(char** blocks, std::shared_ptr<Player> player);
+	Pinky(std::shared_ptr<Characters> player);
 };
 

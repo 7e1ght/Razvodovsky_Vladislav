@@ -12,128 +12,152 @@
 
 using namespace gamefield;
 
-scene::SCENE_ID Game::update(sec delta)
+scene::SCENE_ID Game::update()
 {
-	readKey();
+	drawBlockMap();
+	sec delta = 0.0f, start;
 
+	bool outLoop = false;
 
-	switch (_state)
+	while (outLoop == false)
 	{
-	case game_scene::LOSE:
-		_drawer->clearCanvas();
-		_sceneId = scene::LOSE;
-		break;
-	case game_scene::WIN:
-		break;
-	case game_scene::PLAY:
-		sceneTurn(delta);
-		break;
-	case game_scene::PAUSE:
-		break;
-	case game_scene::GHOST_EAT_ME:
-		_timer += delta;
+		start = clock();
 
-		if (_timer >= 2.f)
+		switch (_state)
 		{
-			_state = game_scene::PLAY;
-			_drawer->clearCanvas();
-			_timer = 0.f;
-		}
-		else
-		{
-			dieScreen();
+		case game_scene::LOSE:
+			_sceneId = scene::LOSE;
+			outLoop = true;
+			break;
+		case game_scene::WIN:
+			break;
+		case game_scene::PLAY:
+			sceneTurn(delta);
+			break;
+		case game_scene::PAUSE:
+			break;
+		case game_scene::GHOST_EAT_ME:
+			_timer += delta;
+
+			if (_timer >= 2.f)
+			{
+				_state = game_scene::PLAY;
+				_drawer->clearCanvas();
+				drawBlockMap();
+				_timer = 0.f;
+			}
+			else
+			{
+				dieScreen();
+			}
+
+			break;
+		case game_scene::RESET_GAME:
+			break;
+		default:
+			break;
 		}
 
-		break;
-	case game_scene::RESET_GAME:
-		break;
-	default:
-		break;
+		_drawer->draw();
+
+		delta = (clock() - start) / CLOCKS_PER_SEC;
 	}
 
 	return _sceneId;
 }
 
 
-void Game::readKey()
+void Game::resetFood()
 {
-	//if (_kbhit() )
-	//{
-	//	char pressed = _getch();
-	//	if (pressed == 'P' || pressed == 'p')
-	//	{
-	//		if (_state == game_scene::PAUSE)
-	//		{
-	//			_state = game_scene::PLAY;
-	//		}
-	//		else if(_state == game_scene::PLAY)
-	//		{
-	//			_state = game_scene::PAUSE;
-	//		}
-	//	}
-	//}
+	for (int i = 0; i < GAMEFIELD_ROW; ++i)
+	{
+		for (int j = 0; j < GAMEFIELD_COLUMN; ++j)
+		{
+			_foods[i][j] = FOOD_MAP[i][j];
+		}
+	}
 }
 
-void Game::sceneTurn(sec delta)
+inline void Game::drawSymbol(unsigned row, unsigned column, drawer::ConsoleSymbolData apprearance)
 {
-	if ((_mainHero && _drawer && _blinky && _inky) == 0) return;
+	_drawer->setChar(row, column, apprearance);
+}
+
+void Game::drawBlockMap()
+{
+	using namespace game_scene;
+
+	for (int i = 0; GAMEFIELD_ROW > i; ++i)
+	{
+		for (int j = 0; GAMEFIELD_COLUMN > j; ++j)
+		{
+			switch (BLOCK_MAP[i][j])
+			{
+			case SPACE:
+				drawSymbol(i+1, j, SPACE_APPEARANCE);
+				break;
+			case WALL:
+				drawSymbol(i+1, j, WALL_APPREARANCE);
+				break;
+			case DOOR:
+				drawSymbol(i+1, j, DOOR_APPEARANCE);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+inline void Game::sceneTurn(sec delta)
+{
+	if ((_mainHero && _blinky && _inky) == 0) return;
 
 	drawScore();
 	drawLife();
 
-	for (int i = 0; i < GAMEFIELD_COLUMN; ++i)
+	for (int row = 0; GAMEFIELD_ROW > row ; ++row)
 	{
-		fillRow(i);
+		fillRow(row);
 	}
 
 	checkMapEvent();
 	doMove(delta);
 }
 
-inline void Game::fillRow(const int row)
-{
-	for (int j = 0; GAMEFIELD_ROW > j ; ++j)
-	{
-		drawMap(row, j);
-		drawCharacters(row, j);
-	}
-}
-
-inline void Game::drawMap(const int row, const int j)
+inline void Game::drawFood(const int row, const int column)
 {
 	using namespace game_scene;
 
-	if (SPACE == _blocks[row][j] || SPACE == _foods[row][j])
+	if (FOOD == _foods[row][column])
 	{
-		_drawer->setChar(j, row + 1, SPACE_APPEARANCE);
-	}
-		
-
-	if (_blocks[row][j] == WALL)
-	{ 
-		_drawer->setChar(j, row + 1, WALL_APPREARANCE);
-	}
-	else if(_blocks[row][j] == DOOR)
+		drawSymbol(row + 1, column, FOOD_APPEARANCE);
+	} 
+	else if (ENERGYZE == _foods[row][column])
 	{
-		_drawer->setChar(j, row + 1, DOOR_APPEARANCE);
+		drawSymbol(row + 1, column, ENERGYZE_APPEARANCE);
 	}
-
-	if (_foods[row][j] == FOOD)
+	else if (SPACE == _foods[row][column] && SPACE == BLOCK_MAP[row][column])
 	{
-		_drawer->setChar(j, row + 1, FOOD_APPEARANCE);
-	}
-	else if(_foods[row][j] == ENERGYZE)
-	{
-		_drawer->setChar(j, row + 1, ENERGYZE_APPEARANCE);
+		drawSymbol(row + 1, column, SPACE_APPEARANCE);
 	}
 }
 
-inline void Game::drawCharacters(const int row, const int j)
+inline void Game::fillRow(const int row)
+{
+	for (int column = 0; GAMEFIELD_COLUMN > column; ++column)
+	{
+		drawFood(row, column);
+		drawCharacters(row, column);
+	}
+}
+
+inline void Game::drawCharacters(const int row, const int column)
 {
 	for (int i = 0; i < _characters.size(); ++i)
 	{
-		if (row == _characters[i]->getPosition().y && j == _characters[i]->getPosition().x)
-			_drawer->setChar(j, row + 1, _characters[i]->getAppearance());
+		if (row == _characters[i]->getPosition().y && column == _characters[i]->getPosition().x)
+			drawSymbol(row + 1, column, _characters[i]->getAppearance());
 	}
 }
 
@@ -158,10 +182,10 @@ void Game::resetAll()
 void Game::dieScreen()
 {
 	Die dieScreen(_drawer);
-	dieScreen.update(0.f);
+	dieScreen.update();
 }
 
-inline void Game::doMove(const float delta)
+inline void Game::doMove(const sec delta)
 {
 	for (int i = 0; i < _characters.size(); ++i)
 	{
@@ -171,7 +195,6 @@ inline void Game::doMove(const float delta)
 
 inline void Game::checkMapEvent()
 {
-
 	using namespace game_scene;
 
 	short
@@ -200,72 +223,21 @@ inline void Game::checkMapEvent()
 			resetAll();
 		}
 	}
+
 }
 
-void Game::openDoor()
-{
-	for (int i = DOOR_START.x; i < DOOR_START.x + DOOR_SIZE; ++i)
-	{
-		_blocks[DOOR_START.y][i] = game_scene::SPACE;
-	}
-}
-
-void Game::closeDoor()
-{
-	for (int i = DOOR_START.x; i < DOOR_START.x + DOOR_SIZE; ++i)
-	{
-		_blocks[DOOR_START.y][i] = game_scene::DOOR;
-	}
-}
-
-Game::Game(std::shared_ptr<Drawer> d) : 
+Game::Game(std::unique_ptr<Drawer>& d) :
 	Scene(d), _score(0), _timer(0.f), _life(3), _state(game_scene::PLAY), _sceneId(scene::GAME), _dieScreenTimer(0.f), pause(true)
 {
 	using namespace game_scene;
-	std::ifstream in("map.txt");
 
-	_blocks = new char* [GAMEFIELD_ROW];
-	for (int i = 0; i < GAMEFIELD_COLUMN; i++)
-	{
-		_blocks[i] = new char[GAMEFIELD_ROW];
-	}
+	resetFood();
 
-	for (int i = 0; i < GAMEFIELD_COLUMN; ++i)
-	{
-		for (int j = 0; j < GAMEFIELD_ROW; ++j)
-		{
-			_blocks[i][j] = SPACE;
-			_foods[i][j] = SPACE;
-		}
-	}
-
-	if (in.is_open())
-	{
-		for (int i = 0; i < GAMEFIELD_COLUMN; ++i)
-		{
-			for (int j = 0; j < GAMEFIELD_ROW; ++j)
-			{
-				unsigned short c;
-				in >> c;
-				if (c == WALL || c == DOOR || c == SPACE)
-					_blocks[i][j] = c;
-				else
-					_foods[i][j] = c;
-			}
-		}
-	}
-	else
-	{
-		std::cout << "map file is not open." << std::endl;
-	}
-
-	in.close();
-
-	_mainHero = std::make_shared<Player>(_blocks);
-	_blinky = std::make_shared<Blinky>(_blocks, _mainHero);
-	_pinky = std::make_shared<Pinky>(_blocks, _mainHero);
-	_inky = std::make_shared<Inky>(_blocks, _mainHero, _blinky);
-	_clyde = std::make_shared<Clyde>(_blocks, _mainHero);
+	_mainHero = std::make_shared<Player>();
+	_blinky = std::make_shared<Blinky>(_mainHero);
+	_pinky = std::make_shared<Pinky>(_mainHero);
+	_inky = std::make_shared<Inky>(_mainHero, _blinky);
+	_clyde = std::make_shared<Clyde>(_mainHero);
 
 	_characters.push_back(_mainHero);
 
@@ -275,15 +247,3 @@ Game::Game(std::shared_ptr<Drawer> d) :
 	_characters.push_back(_clyde);
 }
 
-Game::~Game()
-{
-	for (int i = 0; i < gamefield::GAMEFIELD_ROW; ++i)
-	{
-		for(int j = 0; gamefield::GAMEFIELD_COLUMN > j; ++j)
-		{
-			delete[] _blocks[i];
-		}
-	}
-
-	delete[] _blocks;
-}

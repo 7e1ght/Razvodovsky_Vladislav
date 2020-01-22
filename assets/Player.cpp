@@ -23,14 +23,14 @@ inline void Player::changeDirection()
 	default:
 		break;
 	}
-
-	
 }
 
 void Player::calcDirection()
 {
-	if (!isCollusion(_nextDir))
+	if (isCollusion(_nextDir) == false)
+	{
 		_dir = _nextDir;
+	}
 
 	if (_kbhit())
 	{	
@@ -45,11 +45,8 @@ void Player::resetPosition()
 	_nextDir = characters::STOP;
 }
 
-Player::Player(char** blocks) :
-	Characters(blocks), _nextDir(characters::STOP)
+Player::Player() :
+	Characters(characters::PLAYER_START_POSITION, characters::PLAYER_APPREARANCE, 0.25f), 
+	_nextDir(characters::STOP)
 {
-	_pos = characters::PLAYER_START_POSITION;
-	_appearance = characters::PLAYER_APPREARANCE;
-	_dir = characters::STOP;
-	_moveInterval = 0.250f;
 }

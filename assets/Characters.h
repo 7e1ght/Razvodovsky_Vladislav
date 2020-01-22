@@ -6,21 +6,21 @@ class Characters
 private:
 	void changePosition();
 
-	sec _moveTimer;
-
 protected:
-	sec _timer;
-	char** _blocks;
 
-	drawer::ConsoleSymbolData _appearance;
+	sec _moveTimer;
 	sec _moveInterval;
+	sec _timer;
 
 	characters::Position _pos;
+	characters::Position _lastPosition;
 	characters::DIRECTION _dir;
 
 	bool isCollusion(characters::DIRECTION d);
 
 	virtual void calcDirection() = 0;
+
+	drawer::ConsoleSymbolData _appearance;
 
 public:
 	characters::Position getPosition();
@@ -33,6 +33,7 @@ public:
 	void setMoveInterval(sec interval);
 	drawer::ConsoleSymbolData getAppearance();
 
-	Characters(char** blocks);
-	virtual ~Characters();
+	Characters(characters::Position pos, drawer::ConsoleSymbolData a, sec interval);
+
+	virtual ~Characters() {}
 };
