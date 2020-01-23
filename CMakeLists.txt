@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
-project(Main)
+project(Pac-man)
+
+set(EXECUTABLE_OUTPUT_PATH bin)
 
 message(${PROJECT_NAME})
 
