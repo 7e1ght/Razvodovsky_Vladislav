@@ -3,5 +3,4 @@ project(GameController)
 
 message(${PROJECT_NAME})
 
-include_directories(${PROJECT_NAME} PUBLIC ../*)
-add_library(${PROJECT_NAME} STATIC GameController.h GameController.cpp)
+add_library(${PROJECT_NAME} STATIC ${HEADERS_DIR}/GameController.h GameController.cpp)

@@ -3,8 +3,7 @@ project(Support)
 
 message(${PROJECT_NAME})
 
-set(SUPPORT_HEADER Support.h)
-include_directories(./)
+set(SUPPORT_HEADER ${HEADERS_DIR}/Support.h)
 
 add_subdirectory(Drawer)
 add_subdirectory(GameController)
