@@ -1,6 +1,8 @@
 #include "Ghost.h"
 #include "Support.h"
 
+#include <cmath>
+
 float Ghost::calcDistanceToTargetPoint(characters::Position pos)
 {
 	return sqrtf(pow(_targetPoint.x - pos.x, 2) + pow(_targetPoint.y - pos.y, 2));
