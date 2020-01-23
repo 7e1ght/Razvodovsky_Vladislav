@@ -1,4 +1,6 @@
-#pragma once
+#ifndef Drawer_H
+#define Drawer_H
+
 #include <Windows.h>
 #include "Support.h"
 
@@ -27,3 +29,4 @@ public:
 };
 
 
+#endif

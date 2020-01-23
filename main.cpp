@@ -1,10 +1,5 @@
-﻿#include <iostream>
-#include <Windows.h>
-#include <conio.h>
-#include <fstream>
-#include <time.h>
+﻿#include <Windows.h>
 
-#include "Drawer.h"
 #include "GameController.h"
 
 using namespace std;

@@ -8,7 +8,6 @@
 #include <time.h>
 #include <iostream>
 
-
 void GameController::startGame()
 {
 	scene::SCENE_ID currentScene = scene::MAIN_MENU, lastScene = scene::BEFORE_BIG_BANG;
