@@ -1,8 +1,10 @@
-#pragma once
-#include <memory>
+#ifndef GameController_H
+#define GameController_H
 
 #include "Drawer.h"
 #include "Scene.h"
+
+#include <memory>
 
 class GameController
 {
@@ -15,3 +17,4 @@ public:
 	GameController();
 };
 
+#endif

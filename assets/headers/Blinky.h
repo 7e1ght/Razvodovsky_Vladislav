@@ -16,4 +16,3 @@ public:
 
 	Blinky(std::shared_ptr<Characters> player);
 };
-

@@ -1,5 +1,7 @@
 #include "ClydeChase.h"
 
+#include <cmath>
+
 characters::Position ClydeChase::calcTargetPoint()
 {
 	characters::Position p;

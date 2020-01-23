@@ -1,10 +1,6 @@
-﻿#include <iostream>
+﻿#define WINVER         _WIN32_WINNT_VISTA
+#define _WIN32_WINNT   _WIN32_WINNT_VISTA
 #include <Windows.h>
-#include <conio.h>
-#include <fstream>
-#include <time.h>
-
-#include "Drawer.h"
 #include "GameController.h"
 
 using namespace std;
