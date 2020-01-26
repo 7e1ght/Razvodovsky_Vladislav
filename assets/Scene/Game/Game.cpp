@@ -3,6 +3,7 @@
 #include <string>
 #include <time.h>
 #include <conio.h>
+#include <thread>
 
 #include "Game.h"
 #include "Support.h"
@@ -189,7 +190,8 @@ inline void Game::doMove(const sec delta)
 {
 	for (int i = 0; i < _characters.size(); ++i)
 	{
-		_characters[i]->move(delta);
+		std::thread characterThread(&Characters::move, _characters[i].get(), delta);
+		characterThread.detach();
 	}
 }
 
