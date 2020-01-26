@@ -1,8 +1,10 @@
 #ifndef Drawer_H
 #define Drawer_H
 
-#include <Windows.h>
 #include "Support.h"
+
+#include <Windows.h>
+#include <vector>
 
 class Drawer
 {
@@ -20,8 +22,8 @@ public:
 
 	void setChar(unsigned short x, unsigned short y, const drawer::ConsoleSymbolData& apprearance);
 	void setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background);
-
 	void setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background);
+	void setRectangle(const std::vector<std::vector<char>>& rect, const unsigned short x, const unsigned short y, const unsigned char foreground, const unsigned char background);
 
 	void draw();
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <cfloat>
+#include <vector>
 
 typedef float sec;
 
@@ -68,9 +69,6 @@ struct Position
 	{
 	}
 };
-
-
-
 
 const Position PLAYER_START_POSITION{ 12, 19 };
 
@@ -159,6 +157,14 @@ const char FOOD_MAP[GAMEFIELD_ROW][GAMEFIELD_COLUMN] =
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
+const std::vector<std::vector<char>> DIE_MAP
+{
+	{ 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0 },
+	{ 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0 },
+	{ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0 },
+	{ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0 },
+	{ 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0 }
+};
 
 }
 
@@ -179,10 +185,6 @@ namespace main_menu
 
 	const char ENTER_KEY_CODE = 13;
 
-	//const bool LOGO[LOGO_HEIGHT][LOGO_WIDTH] =
-	//{
-	//	{1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,0,0,0,1,0,0,1,0,0,1}
-	//}
 }
 
 namespace scene

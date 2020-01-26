@@ -1,4 +1,5 @@
 #include "Drawer.h"
+
 #include <iostream>
 
 using namespace drawer;
@@ -36,11 +37,11 @@ void Drawer::clearCanvas()
 	}
 }
 
-void Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char backgroud)
+void Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
 {
 	_canvas[y][x].symbol = c;
 	_canvas[y][x].foreground = foreground;
-	_canvas[y][x].background = backgroud;
+	_canvas[y][x].background = background;
 }
 
 void Drawer::setChar(unsigned short x, unsigned short y, const ConsoleSymbolData& apprearance)
@@ -54,6 +55,20 @@ void Drawer::setText(const char* text, unsigned short x, unsigned short y, unsig
 {
 	while (*text)
 		setChar(*(text++), y, x++, foreground, background);
+}
+
+void Drawer::setRectangle(const std::vector<std::vector<char>>& rect, const unsigned short x, const unsigned short y, const unsigned char foreground, const unsigned char background)
+{
+	for(int row = 0; row < rect.size(); ++row)
+	{
+		for(int column = 0; column < rect[row].size(); ++column)
+		{
+			if(int(rect[row][column]) == 1)
+			{
+				setChar(0, y+row, x+column, foreground, background);
+			}
+		}
+	}
 }
 
 inline void Drawer::outSymbolDataRow(int row)
@@ -77,9 +92,26 @@ void Drawer::draw()
 	setCursorPos(0, 0);
 }
 
-Drawer::Drawer()
+Drawer::Drawer() 
+: _hOut(GetStdHandle(STD_OUTPUT_HANDLE))
 {
-	_hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_FONT_INFOEX font = {};
+	GetCurrentConsoleFontEx(_hOut, false, &font);
+	font.dwFontSize = { 12, 16 };
+	font.cbSize = sizeof(font);
+	lstrcpyW(font.FaceName, L"Consolas");
+	SetCurrentConsoleFontEx(_hOut, false, &font);
+
+	COORD size;
+	size.X = 50;
+	size.Y = 1000;
+
+	SetConsoleScreenBufferSize(_hOut, size);
+
+	CONSOLE_CURSOR_INFO cursorInfo;
+	cursorInfo.dwSize = 1;
+	cursorInfo.bVisible = 0;
+	SetConsoleCursorInfo(_hOut, &cursorInfo);
 
 	clearCanvas();
 }

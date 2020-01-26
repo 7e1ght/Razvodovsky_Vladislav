@@ -2,23 +2,13 @@
 
 #include <fstream>
 #include <iostream>
+#include <time.h>
 
 scene::SCENE_ID Die::update()
 {
-	for (int i = 0; i < drawer::CANVAS_ROW; ++i)
-	{
-		for (int j = 0; j < drawer::CANVAS_COLUMN; ++j)
-		{
-			if (_screen[i][j] == false)
-			{
-				_drawer->setChar(i, j, game_scene::SPACE_APPEARANCE);
-			}
-			else
-			{
-				_drawer->setChar(0, i, j, drawer::BLACK, drawer::RED);
-			}
-		}
-	}
+
+	_drawer->clearCanvas();
+	_drawer->setRectangle(gamefield::DIE_MAP, 0, 10, drawer::BLACK, drawer::RED);
 
 	return scene::BEFORE_BIG_BANG;
 }

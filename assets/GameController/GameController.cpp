@@ -7,6 +7,8 @@
 
 #include <time.h>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 void GameController::startGame()
 {
@@ -48,7 +50,6 @@ void GameController::startGame()
 			break;
 		}
 	}
-
 }
 
 GameController::GameController() :
