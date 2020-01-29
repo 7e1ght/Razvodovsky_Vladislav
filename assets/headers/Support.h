@@ -209,7 +209,11 @@ namespace game_scene
 		WALL,
 		FOOD,
 		ENERGYZE,
-		DOOR
+        DOOR,
+        BLINKY = 10,
+        INKY,
+        CLYDE,
+        PINKY
 	};
 
 	enum STATE
