@@ -1,14 +1,18 @@
-﻿#define WINVER         _WIN32_WINNT_VISTA
-#define _WIN32_WINNT   _WIN32_WINNT_VISTA
-
-#include "GameController.h"
+﻿#include "GameController.h"
+#include <ncurses.h>
 
 using namespace std;
 
 int main()
 {
-	GameController gc;
-	gc.startGame();
+    initscr();
+    keypad(stdscr, TRUE);
 
-	return 0;
+    GameController gc;
+    gc.startGame();
+
+    endwin();
+
+
+    return 0;
 }

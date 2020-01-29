@@ -1,22 +1,13 @@
 #include "Drawer.h"
 
+#include <ncurses.h>
 #include <iostream>
 
 using namespace drawer;
 
 void Drawer::setCursorPos(unsigned short x, unsigned short y)
 {
-	COORD pos;
-	pos.X = x;
-	pos.Y = y;
-
-	SetConsoleCursorPosition(_hOut, pos);
-}
-
-void Drawer::setColor(unsigned short foreground, unsigned short background)
-{
-	unsigned char color = foreground | (background << 4);
-	SetConsoleTextAttribute(_hOut, color);
+    move(y, x);
 }
 
 inline void Drawer::setRowToZero(int row)
@@ -24,51 +15,34 @@ inline void Drawer::setRowToZero(int row)
 	for (int j = 0; CANVAS_ROW > j; j++)
 	{
 		_canvas[row][j].symbol = 0;
-		_canvas[row][j].foreground = 0;
-		_canvas[row][j].background = 0;
+        _canvas[row][j].blockID = blocks::NOTHING;
 	}
 }
 
 void Drawer::clearCanvas()
 {
-	for (int i = 0; CANVAS_COLUMN > i; i++)
-	{
-		setRowToZero(i);
-	}
+    for (int i = 0; CANVAS_COLUMN > i; i++)
+    {
+        setRowToZero(i);
+    }
 }
 
-void Drawer::setChar(char c, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
+void Drawer::setChar(char c, unsigned short x, unsigned short y, const blocks::BLOCK_ID block)
 {
 	_canvas[y][x].symbol = c;
-	_canvas[y][x].foreground = foreground;
-	_canvas[y][x].background = background;
+    _canvas[y][x].blockID = block;
 }
 
 void Drawer::setChar(unsigned short x, unsigned short y, const ConsoleSymbolData& apprearance)
 {
 	_canvas[y][x].symbol = apprearance.symbol;
-	_canvas[y][x].foreground = apprearance.foreground;
-	_canvas[y][x].background = apprearance.background;
+    _canvas[y][x].blockID = apprearance.blockID;
 }
 
-void Drawer::setText(const char* text, unsigned short x, unsigned short y, unsigned char foreground, unsigned char background)
+void Drawer::setText(const char* text, unsigned short x, unsigned short y)
 {
 	while (*text)
-		setChar(*(text++), y, x++, foreground, background);
-}
-
-void Drawer::setRectangle(const std::vector<std::vector<char>>& rect, const unsigned short x, const unsigned short y, const unsigned char foreground, const unsigned char background)
-{
-	for(int row = 0; row < rect.size(); ++row)
-	{
-		for(int column = 0; column < rect[row].size(); ++column)
-		{
-			if(int(rect[row][column]) == 1)
-			{
-				setChar(0, y+row, x+column, foreground, background);
-			}
-		}
-	}
+        setChar(*(text++), y, x++, blocks::TEXT);
 }
 
 inline void Drawer::outSymbolDataRow(int row)
@@ -77,8 +51,9 @@ inline void Drawer::outSymbolDataRow(int row)
 	{
 		setCursorPos(row, j);
 
-		setColor(_canvas[row][j].foreground, _canvas[row][j].background);
-		std::cout << _canvas[row][j].symbol;
+        attron(COLOR_PAIR(_canvas[row][j].blockID));
+        addch(_canvas[row][j].symbol);
+        attroff(COLOR_PAIR(_canvas[row][j].blockID));
 	}
 }
 
@@ -90,28 +65,42 @@ void Drawer::draw()
 	}
 
 	setCursorPos(0, 0);
+    refresh();
 }
 
-Drawer::Drawer() 
-: _hOut(GetStdHandle(STD_OUTPUT_HANDLE))
+void Drawer::setRectangle(const std::vector<std::vector<char>>& rect, const unsigned short x, const unsigned short y, const ConsoleSymbolData& style)
 {
-	CONSOLE_FONT_INFOEX font = {};
-	GetCurrentConsoleFontEx(_hOut, false, &font);
-	font.dwFontSize = { 12, 16 };
-	font.cbSize = sizeof(font);
-	lstrcpyW(font.FaceName, L"Consolas");
-	SetCurrentConsoleFontEx(_hOut, false, &font);
+    for(int row = 0; row < rect.size(); ++row)
+    {
+        for(int column = 0; column < rect[row].size(); ++column)
+        {
+            if(int(rect[row][column]) == 1)
+            {
+                setChar(y+row, x+column, style);
+            }
+        }
+    }
+}
 
-	COORD size;
-	size.X = 50;
-	size.Y = 1000;
+Drawer::Drawer()
+{
+    curs_set(0);
 
-	SetConsoleScreenBufferSize(_hOut, size);
+    start_color();
+    init_pair(blocks::WALL, COLOR_BLUE, COLOR_BLUE);
+    init_pair(blocks::FOOD, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(blocks::ENERGYZE, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(blocks::DOOR, COLOR_BLACK, COLOR_MAGENTA);
+    init_pair(blocks::SPACE, COLOR_BLACK, COLOR_BLACK);
 
-	CONSOLE_CURSOR_INFO cursorInfo;
-	cursorInfo.dwSize = 1;
-	cursorInfo.bVisible = 0;
-	SetConsoleCursorInfo(_hOut, &cursorInfo);
+    init_pair(blocks::BLINKY, COLOR_RED, COLOR_BLACK);
+    init_pair(blocks::PINKY, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(blocks::INKY, COLOR_CYAN, COLOR_BLACK);
+    init_pair(blocks::CLYDE, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(blocks::PLAYER, COLOR_YELLOW, COLOR_BLACK);
+
+    init_pair(blocks::TEXT, COLOR_WHITE, COLOR_BLACK);
+    init_pair(blocks::RED_BLOCK, COLOR_RED, COLOR_RED);
 
 	clearCanvas();
 }

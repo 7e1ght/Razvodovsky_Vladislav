@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
-project(Support)
+project(ASSETS)
 
 message(${PROJECT_NAME})
 
-set(SUPPORT_HEADER ${HEADERS_DIR}/Support.h)
+#set(SUPPORT_HEADER ${HEADERS_DIR}/Support.h)
 
+add_subdirectory(Support)
 add_subdirectory(Drawer)
 add_subdirectory(GameController)
 add_subdirectory(Characters)

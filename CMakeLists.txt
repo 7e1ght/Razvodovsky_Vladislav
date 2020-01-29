@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Curses REQUIRED)
 
 set(HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/assets/headers)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread ")
 
 include_directories(${HEADERS_DIR})
 

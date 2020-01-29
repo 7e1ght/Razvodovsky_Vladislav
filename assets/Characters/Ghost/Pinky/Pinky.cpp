@@ -7,11 +7,11 @@ void Pinky::resetPosition()
 
 void Pinky::resetAppearance()
 {
-	_appearance = characters::PINKY_APPREARANCE;
+    _appearance = characters::PINKY_APPEARANCE;
 }
 
 Pinky::Pinky(std::shared_ptr<Characters> player) :
-	Ghost(characters::PINKY_START_POSITION, characters::PINKY_APPREARANCE, 0.5f)
+    Ghost(characters::PINKY_START_POSITION, characters::PINKY_APPEARANCE, 0.5f)
 {
 	_stdMode.reset(new PinkyChase(mode::MAX_DURATION, player));
 	_mode = _stdMode;

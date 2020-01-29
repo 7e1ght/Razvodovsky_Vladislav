@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <time.h>
-#include <conio.h>
 #include <thread>
 
 #include "Game.h"
@@ -165,13 +164,13 @@ inline void Game::drawCharacters(const int row, const int column)
 inline void Game::drawScore()
 {
 	std::string scoreStr = "Score: " + std::to_string(_score);
-	_drawer->setText(scoreStr.c_str(), 0, 0, drawer::LIGHT_GRAY, drawer::BLACK);
+    _drawer->setText(scoreStr.c_str(), 0, 0);
 }
 
 inline void Game::drawLife() 
 {
 	std::string scoreStr = "Life left: " + std::to_string(_life);
-	_drawer->setText(scoreStr.c_str(), 0, gamefield::GAMEFIELD_COLUMN + 1, drawer::LIGHT_GRAY, drawer::BLACK);
+    _drawer->setText(scoreStr.c_str(), 0, gamefield::GAMEFIELD_COLUMN + 1);
 }
 
 void Game::resetAll()

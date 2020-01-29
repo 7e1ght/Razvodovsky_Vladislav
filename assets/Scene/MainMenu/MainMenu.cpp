@@ -1,6 +1,5 @@
 #include "MainMenu.h"
 
-#include <conio.h>
 #include <string>
 
 inline void MainMenu::enterPressed()
@@ -25,22 +24,22 @@ scene::SCENE_ID MainMenu::update()
 		std::string startStr = "   Start game";
 		std::string quitStr = "   Quit";
 
-		if (_kbhit())
-		{
-			switch (_getch())
-			{
-			case 'W': case 'w':
-				_currentChoose = CHOOSE::START_GAME;
-				break;
-			case 'S': case 's':
-				_currentChoose = CHOOSE::QUIT;
-				break;
-			case main_menu::ENTER_KEY_CODE:
-				enterPressed();
-				isEnterPressed = true;
-				break;
-			}
-		}
+        if (utilities::kbhit())
+        {
+            switch (getch())
+            {
+            case 'W': case 'w': case KEY_UP:
+                _currentChoose = CHOOSE::START_GAME;
+                break;
+            case 'S': case 's': case KEY_DOWN:
+                _currentChoose = CHOOSE::QUIT;
+                break;
+            case KEY_ENTER:
+                enterPressed();
+                isEnterPressed = true;
+                break;
+            }
+        }
 
 		switch (_currentChoose)
 		{
@@ -57,8 +56,8 @@ scene::SCENE_ID MainMenu::update()
 			break;
 		}
 
-		_drawer->setText(startStr.c_str(), 10, 10, drawer::LIGHT_GRAY, drawer::BLACK);
-		_drawer->setText(quitStr.c_str(), 10, 12, drawer::LIGHT_GRAY, drawer::BLACK);
+        _drawer->setText(startStr.c_str(), 10, 10);
+        _drawer->setText(quitStr.c_str(), 10, 12);
 
 		_drawer->draw();
 	}

@@ -1,6 +1,5 @@
 #include "Lose.h"
 
-#include <conio.h>
 #include <string>
 
 inline void Lose::enterPressed()
@@ -26,22 +25,22 @@ scene::SCENE_ID Lose::update()
 		std::string quitStr = "   New game";
 
 
-		if(_kbhit())
-		{
-			switch(_getch())
-			{
-				case 'W': case 'w':
-					_currentChoose = CHOOSE::MAIN_MENU;
-					break;
-				case 'S': case 's':
-					_currentChoose = CHOOSE::NEW_GAME;
-					break;
-				case main_menu::ENTER_KEY_CODE:
-					enterPressed();
-					outLoop = true;
-					break;
-			}
-		}
+        if(utilities::kbhit())
+        {
+            switch(getch())
+            {
+                case 'W': case 'w': case KEY_UP:
+                    _currentChoose = CHOOSE::MAIN_MENU;
+                    break;
+                case 'S': case 's': case KEY_DOWN:
+                    _currentChoose = CHOOSE::NEW_GAME;
+                    break;
+                case KEY_ENTER:
+                    enterPressed();
+                    outLoop = true;
+                    break;
+            }
+        }
 
 		switch(_currentChoose)
 		{
@@ -58,8 +57,8 @@ scene::SCENE_ID Lose::update()
 				break;
 		}
 
-		_drawer->setText(startStr.c_str(), 10, 10, drawer::LIGHT_GRAY, drawer::BLACK);
-		_drawer->setText(quitStr.c_str(), 10, 12, drawer::LIGHT_GRAY, drawer::BLACK);
+        _drawer->setText(startStr.c_str(), 10, 10);
+        _drawer->setText(quitStr.c_str(), 10, 12);
 
 		_drawer->draw();
 	}

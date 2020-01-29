@@ -1,5 +1,4 @@
 #include "Characters.h"
-#include <conio.h>
 #include "Support.h"
 
 using namespace gamefield;
