@@ -42,7 +42,7 @@ private:
 	void resetFood();
 	void drawFood(const int row, const int column);
 
-	void drawBlockMap();
+    void drawBlockMap(const int row, const int column);
 
     void drawSymbol(unsigned x, unsigned y, appearance_space::ConsoleSymbolData apprearance);
     void drawText(const std::string& text, const int x, const int y, const appearance_space::ConsoleSymbolData& appearance = appearance_space::DEFAULT_TEXT_APPREARANCE);
@@ -62,7 +62,7 @@ private:
 	void checkMapEvent();
 
 public:
-    id_space::SCENE_ID update() override;
+    id_space::SCENE_ID update(sec delta) override;
 
     Game();
 	~Game() {}

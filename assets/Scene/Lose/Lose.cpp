@@ -16,12 +16,12 @@ inline void Lose::enterPressed()
 	}
 }
 
-id_space::SCENE_ID Lose::update()
+id_space::SCENE_ID Lose::update(sec delta)
 {
-	bool outLoop = false;
+//	bool outLoop = false;
 
-	while(outLoop == false)
-	{
+//	while(outLoop == false)
+//	{
 		std::string startStr = "   Main menu";
 		std::string quitStr = "   New game";
 
@@ -38,7 +38,7 @@ id_space::SCENE_ID Lose::update()
 					break;
                 case KEY_ENTER:
 					enterPressed();
-					outLoop = true;
+//					outLoop = true;
 					break;
 			}
 		}
@@ -62,7 +62,7 @@ id_space::SCENE_ID Lose::update()
         utilities_space::NCSupport.drawText(quitStr, position_space::Position(10, 12));
 
         refresh();
-	}
+//	}
 
 	return _returnScene;
 }

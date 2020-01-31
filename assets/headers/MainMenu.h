@@ -20,7 +20,7 @@ private:
 	CHOOSE _currentChoose;
 	void enterPressed();
 public:
-    id_space::SCENE_ID update();
+    id_space::SCENE_ID update(sec delta);
 
     MainMenu();
 };

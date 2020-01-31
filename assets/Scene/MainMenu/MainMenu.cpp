@@ -11,17 +11,17 @@ inline void MainMenu::enterPressed()
         _returnScene = id_space::SCENE_ID::GAME;
 		break;
 	case CHOOSE::QUIT:
-		exit(0);
+        _returnScene = id_space::SCENE_ID::END_GAME;
 		break;
 	}
 }
 
-id_space::SCENE_ID MainMenu::update()
+id_space::SCENE_ID MainMenu::update(sec delta)
 {
-	bool isEnterPressed = false;
+//	bool isEnterPressed = false;
 
-	while (isEnterPressed == false)
-	{
+//	while (isEnterPressed == false)
+//	{
 		std::string startStr = "   Start game";
 		std::string quitStr = "   Quit";
 
@@ -38,7 +38,7 @@ id_space::SCENE_ID MainMenu::update()
             case KEY_ENTER
             :
 				enterPressed();
-				isEnterPressed = true;
+//				isEnterPressed = true;
 				break;
 			}
 		}
@@ -62,7 +62,7 @@ id_space::SCENE_ID MainMenu::update()
         utilities_space::NCSupport.drawText(quitStr.c_str(), position_space::Position(10, 12));
 
         refresh();
-	}
+//	}
 
 	return _returnScene;
 }

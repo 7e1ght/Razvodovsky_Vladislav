@@ -7,7 +7,7 @@
 class Scene
 {
 public:
-    virtual id_space::SCENE_ID update() = 0;
+    virtual id_space::SCENE_ID update(sec delta) = 0;
 	virtual ~Scene() {}
 };
 

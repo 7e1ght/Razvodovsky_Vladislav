@@ -15,58 +15,29 @@ namespace apps = appearance_space;
 namespace gf = gamefield;
 namespace maps = map_space;
 
-id_space::SCENE_ID Game::update()
+id_space::SCENE_ID Game::update(sec delta)
 {
-    drawBlockMap();
+    switch (_state)
+    {
+    case game_scene::LOSE:
+        _sceneId = id_space::SCENE_ID::LOSE;
+        break;
+    case game_scene::WIN:
+        break;
+    case game_scene::PLAY:
+        sceneTurn(delta);
+        break;
+    case game_scene::PAUSE:
+        break;
+    case game_scene::GHOST_EAT_ME:
+        dieScreen();
+        _state = game_scene::STATE::PLAY;
+        clear();
 
-	sec delta = 0.0f, start;
-
-	bool outLoop = false;
-
-	while (outLoop == false)
-	{
-		start = clock();
-
-		switch (_state)
-		{
-		case game_scene::LOSE:
-            _sceneId = id_space::SCENE_ID::LOSE;
-			outLoop = true;
-			break;
-		case game_scene::WIN:
-			break;
-		case game_scene::PLAY:
-			sceneTurn(delta);
-			break;
-		case game_scene::PAUSE:
-			break;
-		case game_scene::GHOST_EAT_ME:
-			_timer += delta;
-
-			if (_timer >= 2.f)
-			{
-				_state = game_scene::PLAY;
-                clear();
-				drawBlockMap();
-				_timer = 0.f;
-			}
-			else
-			{
-                clear();
-				dieScreen();
-			}
-
-			break;
-		case game_scene::RESET_GAME:
-			break;
-		default:
-			break;
-		}
-
-        refresh();
-
-		delta = (clock() - start) / CLOCKS_PER_SEC;
-	}
+        break;
+    case game_scene::RESET_GAME:
+        break;
+    }
 
 	return _sceneId;
 }
@@ -95,28 +66,22 @@ inline void Game::drawText(const std::string& text, const int x, const int y, co
     utilities_space::NCSupport.drawText(text, pos, appearance);
 }
 
-void Game::drawBlockMap()
+void Game::drawBlockMap(const int row, const int column)
 {
-    for (int i = 0; gf::GAMEFIELD_ROW > i; ++i)
-	{
-        for (int j = 0; gf::GAMEFIELD_COLUMN > j; ++j)
-		{
-            switch (map_space::BLOCK_MAP[i][j])
-			{
-            case bid::SPACE:
-                drawSymbol(j, i+1, apps::SPACE_APPEARANCE);
-				break;
-            case bid::WALL:
-                drawSymbol(j, i+1, apps::WALL_APPEARANCE);
-				break;
-            case bid::DOOR:
-                drawSymbol(j, i+1, apps::DOOR_APPEARANCE);
-				break;
-			default:
-				break;
-			}
-		}
-	}
+    switch (map_space::BLOCK_MAP[row][column])
+    {
+    case bid::SPACE:
+        drawSymbol(column, row+1, apps::SPACE_APPEARANCE);
+        break;
+    case bid::WALL:
+        drawSymbol(column, row+1, apps::WALL_APPEARANCE);
+        break;
+    case bid::DOOR:
+        drawSymbol(column, row+1, apps::DOOR_APPEARANCE);
+        break;
+    default:
+        break;
+    }
 }
 
 inline void Game::sceneTurn(sec delta)
@@ -156,6 +121,7 @@ inline void Game::fillRow(const int row)
 {
     for (int column = 0; gf::GAMEFIELD_COLUMN > column; ++column)
 	{
+        drawBlockMap(row, column);
 		drawFood(row, column);
 		drawCharacters(row, column);
 	}
@@ -190,10 +156,9 @@ void Game::resetAll()
 		_characters[i]->resetPosition();
 }
 
-void Game::dieScreen()
+inline void Game::dieScreen()
 {
-    Die dieScreen;
-	dieScreen.update();
+    Die().update(scene::NO_DELTA);
 }
 
 inline void Game::doMove(const sec delta)
@@ -242,7 +207,7 @@ Game::Game()
 {
 	using namespace game_scene;
 
-	resetFood();
+    resetFood();
 
 	_mainHero = std::make_shared<Player>();
 	_blinky = std::make_shared<Blinky>(_mainHero);

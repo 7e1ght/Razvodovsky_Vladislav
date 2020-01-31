@@ -7,6 +7,11 @@
 
 typedef float sec;
 
+namespace scene
+{
+    const float NO_DELTA = 0.f;
+}
+
 namespace gamefield
 {
 
@@ -54,7 +59,8 @@ enum class SCENE_ID : int
     GAME,
     LOSE,
     SCENE_ERROR,
-    MAIN_MENU
+    MAIN_MENU,
+    END_GAME
 };
 
 }
