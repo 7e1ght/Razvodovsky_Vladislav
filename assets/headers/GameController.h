@@ -9,7 +9,6 @@
 class GameController
 {
 private:
-	std::unique_ptr<Drawer> _drawer;
 	std::unique_ptr<Scene> _currentScene;
 public:
 	void startGame();

@@ -9,8 +9,8 @@ class Die :
 private:
 	char _screen[drawer::CANVAS_ROW][drawer::CANVAS_COLUMN];
 public:
-	scene::SCENE_ID update() override;
+    id_space::SCENE_ID update() override;
 
-	Die(std::unique_ptr<Drawer>& d);
+    Die();
 };
 

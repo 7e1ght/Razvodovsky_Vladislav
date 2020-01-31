@@ -9,7 +9,7 @@ class Lose :
 	public Scene
 {
 private:
-	scene::SCENE_ID _returnScene;
+    id_space::SCENE_ID _returnScene;
 	enum CHOOSE
 	{
 		MAIN_MENU,
@@ -19,7 +19,7 @@ private:
 	CHOOSE _currentChoose;
 	void enterPressed();
 public:
-	scene::SCENE_ID update();
+    id_space::SCENE_ID update();
 
-	Lose(std::unique_ptr<Drawer>& d);
+    Lose();
 };

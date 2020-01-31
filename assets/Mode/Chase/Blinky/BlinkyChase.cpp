@@ -1,6 +1,6 @@
 #include "BlinkyChase.h"
 
-characters::Position BlinkyChase::calcTargetPoint()
+position_space::Position BlinkyChase::calcTargetPoint()
 {
 	return _player->getPosition();
 }

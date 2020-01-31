@@ -3,16 +3,16 @@
 
 void Clyde::resetPosition()
 {
-	_pos = characters::CLYDE_START_POSITION;
+    _pos = position_space::CLYDE_START_POSITION;
 }
 
 void Clyde::resetAppearance()
 {
-	_appearance = characters::CLYDE_APPREARANCE;
+    _appearance = appearance_space::CLYDE_APPREARANCE;
 }
 
 Clyde::Clyde(std::shared_ptr<Characters> player) :
-	Ghost(characters::CLYDE_START_POSITION, characters::CLYDE_APPREARANCE, 0.5f)
+    Ghost(position_space::CLYDE_START_POSITION, appearance_space::CLYDE_APPREARANCE, 0.5f)
 {
 
 

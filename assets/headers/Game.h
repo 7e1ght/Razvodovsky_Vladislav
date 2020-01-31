@@ -25,7 +25,7 @@ private:
 	unsigned _life;
 
 	game_scene::STATE _state;
-	scene::SCENE_ID _sceneId;
+    id_space::SCENE_ID _sceneId;
 
 	std::shared_ptr<Characters> _mainHero;
 	std::shared_ptr<Characters> _blinky;
@@ -44,7 +44,8 @@ private:
 
 	void drawBlockMap();
 
-	void drawSymbol(unsigned x, unsigned y, drawer::ConsoleSymbolData apprearance);
+    void drawSymbol(unsigned x, unsigned y, appearance_space::ConsoleSymbolData apprearance);
+    void drawText(const std::string& text, const int x, const int y, const appearance_space::ConsoleSymbolData& appearance = appearance_space::DEFAULT_TEXT_APPREARANCE);
 
 	// for non-nest
 	void fillRow(const int row);
@@ -61,9 +62,9 @@ private:
 	void checkMapEvent();
 
 public:
-	scene::SCENE_ID update() override;
+    id_space::SCENE_ID update() override;
 
-	Game(std::unique_ptr<Drawer>& d);
+    Game();
 	~Game() {}
 };
 

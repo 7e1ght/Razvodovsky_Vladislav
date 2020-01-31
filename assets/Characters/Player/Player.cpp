@@ -1,12 +1,11 @@
 #include "Player.h"
-
-#include <conio.h>
+#include <ncurses.h>
 
 inline void Player::changeDirection()
 {
 	using namespace characters;
 
-	switch (_getch())
+    switch (getch())
 	{
 	case 'W': case 'w':
 		_nextDir = UP;
@@ -32,7 +31,7 @@ void Player::calcDirection()
 		_dir = _nextDir;
 	}
 
-	if (_kbhit())
+    if (utilities_space::kbhit())
 	{	
 		changeDirection();	
 	}
@@ -40,13 +39,13 @@ void Player::calcDirection()
 
 void Player::resetPosition()
 {
-	_pos = characters::PLAYER_START_POSITION;
+    _pos = position_space::PLAYER_START_POSITION;
 	_dir = characters::STOP;
 	_nextDir = characters::STOP;
 }
 
 Player::Player() :
-	Characters(characters::PLAYER_START_POSITION, characters::PLAYER_APPREARANCE, 0.25f), 
+    Characters(position_space::PLAYER_START_POSITION, appearance_space::PLAYER_APPREARANCE, 0.25f),
 	_nextDir(characters::STOP)
 {
 }

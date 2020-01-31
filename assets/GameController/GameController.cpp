@@ -9,38 +9,39 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <ncurses.h>
 
 void GameController::startGame()
 {
-	scene::SCENE_ID currentScene = scene::MAIN_MENU, lastScene = scene::BEFORE_BIG_BANG;
+    id_space::SCENE_ID currentScene = id_space::SCENE_ID::MAIN_MENU, lastScene = id_space::SCENE_ID::BEFORE_BIG_BANG;
 
 	while (true)
 	{
-		_drawer->clearCanvas();
+        clear();
 		
 		switch (currentScene)
 		{
-		case scene::MAIN_MENU:
+        case id_space::SCENE_ID::MAIN_MENU:
 			if (currentScene != lastScene)
 			{
-				_currentScene.reset(new MainMenu(_drawer));
-				lastScene = scene::MAIN_MENU;
+                _currentScene.reset(new MainMenu);
+                lastScene = id_space::SCENE_ID::MAIN_MENU;
 			}
 			currentScene = _currentScene->update();
 			break;
-		case scene::GAME:
+        case id_space::SCENE_ID::GAME:
 			if (currentScene != lastScene)
 			{
-				_currentScene.reset(new Game(_drawer));
-				lastScene = scene::GAME;
+                _currentScene.reset(new Game);
+                lastScene = id_space::SCENE_ID::GAME;
 			}
 			currentScene =  _currentScene->update();
 			break;
-		case scene::LOSE:
+        case id_space::SCENE_ID::LOSE:
 			if (currentScene != lastScene)
 			{
-				_currentScene.reset(new Lose(_drawer));
-				lastScene = scene::LOSE;
+                _currentScene.reset(new Lose);
+                lastScene = id_space::SCENE_ID::LOSE;
 			}
 
 			currentScene = _currentScene->update();
@@ -52,8 +53,8 @@ void GameController::startGame()
 	}
 }
 
-GameController::GameController() :
-	_drawer(new Drawer), _currentScene(nullptr)
+GameController::GameController()
+    : _currentScene(nullptr)
 {
 
 }

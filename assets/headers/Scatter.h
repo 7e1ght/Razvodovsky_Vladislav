@@ -6,10 +6,10 @@ class Scatter :
 	public Mode
 {
 private:
-	characters::Position _runTo;
+    position_space::Position _runTo;
 public:
-	characters::Position calcTargetPoint() override;
+    position_space::Position calcTargetPoint() override;
 
-	Scatter(sec durartion, characters::Position p);
+    Scatter(sec durartion, position_space::Position p);
 };
 

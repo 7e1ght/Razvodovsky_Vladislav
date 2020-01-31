@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-float Ghost::calcDistanceToTargetPoint(characters::Position pos)
+float Ghost::calcDistanceToTargetPoint(position_space::Position pos)
 {
 	return sqrtf(pow(_targetPoint.x - pos.x, 2) + pow(_targetPoint.y - pos.y, 2));
 }
@@ -96,7 +96,7 @@ void Ghost::init()
 	_isInitialized = true;
 }
 
-Ghost::Ghost(characters::Position pos, drawer::ConsoleSymbolData a, sec interval) :
+Ghost::Ghost(position_space::Position pos, appearance_space::ConsoleSymbolData a, sec interval) :
 	Characters(pos, a, interval), 
 	_targetPoint{ -1, -1 }, _stdMode(nullptr),
 	_mode(nullptr), _lastCall(0.0f), _isInitialized(false)

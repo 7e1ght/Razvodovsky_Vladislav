@@ -13,8 +13,8 @@ private:
 	std::shared_ptr<Characters> _player;
 	Characters* _clyde;
 
-	characters::Position calcTargetPoint();
-	void targetPoint(characters::Position& p);
+    position_space::Position calcTargetPoint();
+    void targetPoint(position_space::Position& p);
 	
 	float calcDistance();
 public:

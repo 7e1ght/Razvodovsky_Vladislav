@@ -1,8 +1,8 @@
 #include "Initializing.h"
 
-characters::Position Initializing::calcTargetPoint()
+position_space::Position Initializing::calcTargetPoint()
 {
-	return characters::Position(13, 10);
+    return position_space::Position(13, 10);
 }
 
 Initializing::Initializing(sec duraction)

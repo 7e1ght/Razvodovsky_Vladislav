@@ -1,8 +1,8 @@
 #include "InkyChase.h"
 
-characters::Position InkyChase::calcTargetPoint()
+position_space::Position InkyChase::calcTargetPoint()
 {
-	characters::Position p{ -1, -1 };
+    position_space::Position p{ -1, -1 };
 
 	if (_player != nullptr)
 	{
@@ -12,9 +12,10 @@ characters::Position InkyChase::calcTargetPoint()
 	return p;
 }
 
-inline void InkyChase::targetPosition(characters::Position& p)
+inline void InkyChase::targetPosition(position_space::Position& p)
 {
-	using namespace characters;
+    using namespace position_space;
+    using namespace characters;
 
 	Position pp = _player->getPosition(); // player position
 	Position bp = _blinky->getPosition(); // blinky position

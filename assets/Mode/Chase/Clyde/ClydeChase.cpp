@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-characters::Position ClydeChase::calcTargetPoint()
+position_space::Position ClydeChase::calcTargetPoint()
 {
-	characters::Position p;
+    position_space::Position p;
 
 	if (_player != nullptr)
 	{
@@ -16,7 +16,8 @@ characters::Position ClydeChase::calcTargetPoint()
 
 float ClydeChase::calcDistance()
 {
-	using namespace characters;
+    using namespace position_space;
+
 	Position pp = _player->getPosition();
 	Position cp = _clyde->getPosition();
 
@@ -25,12 +26,12 @@ float ClydeChase::calcDistance()
 	return sqrtf( pow(difference.x, 2) + pow(difference.y, 2) );
 }
 
-inline void ClydeChase::targetPoint(characters::Position& p)
+inline void ClydeChase::targetPoint(position_space::Position& p)
 {	
 	float distance = calcDistance();
 
 	if (distance >= 8.f) p = _player->getPosition();
-	else p = mode::CLYDE_SCATTER_POSITION;
+    else p = position_space::CLYDE_SCATTER_POSITION;
 }
 
 ClydeChase::ClydeChase(sec duraction, std::shared_ptr<Characters> player, Characters* clyde) :
