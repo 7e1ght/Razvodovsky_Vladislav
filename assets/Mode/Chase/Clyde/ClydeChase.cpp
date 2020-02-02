@@ -2,22 +2,20 @@
 
 #include <cmath>
 
-characters::Position ClydeChase::calcTargetPoint()
+position_space::Position ClydeChase::calcTargetPoint()
 {
-	characters::Position p;
+    position_space::Position p;
 
-	if (_player != nullptr)
-	{
-		targetPoint(p);
-	}
+    targetPoint(p);
 
 	return p;
 }
 
 float ClydeChase::calcDistance()
 {
-	using namespace characters;
-	Position pp = _player->getPosition();
+    using namespace position_space;
+
+    Position pp = utilities_space::SHMHellper::getDataSHM<position_space::Position>(shm_space::playerPrefix + shm_space::positionTag);
 	Position cp = _clyde->getPosition();
 
 	Position difference = pp - cp;
@@ -25,16 +23,18 @@ float ClydeChase::calcDistance()
 	return sqrtf( pow(difference.x, 2) + pow(difference.y, 2) );
 }
 
-inline void ClydeChase::targetPoint(characters::Position& p)
+inline void ClydeChase::targetPoint(position_space::Position& p)
 {	
 	float distance = calcDistance();
 
-	if (distance >= 8.f) p = _player->getPosition();
-	else p = mode::CLYDE_SCATTER_POSITION;
+    position_space::Position pPos = utilities_space::SHMHellper::getDataSHM<position_space::Position>(shm_space::playerPrefix + shm_space::positionTag);
+
+    if (distance >= 8.f) p = pPos;
+    else p = position_space::CLYDE_SCATTER_POSITION;
 }
 
-ClydeChase::ClydeChase(sec duraction, std::shared_ptr<Characters> player, Characters* clyde) :
-	Mode(duraction), _player(player), _clyde(clyde)
+ClydeChase::ClydeChase(sec duraction, Characters* clyde) :
+    Mode(duraction), _clyde(clyde)
 {
 
 }

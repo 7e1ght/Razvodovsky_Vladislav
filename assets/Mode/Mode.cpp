@@ -5,7 +5,7 @@ bool Mode::isOver()
 	return _isOver;
 }
 
-characters::Position Mode::modeTurn(sec delta)
+position_space::Position Mode::modeTurn(sec delta)
 {
 	_modeTimer += delta;
 

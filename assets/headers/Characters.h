@@ -1,6 +1,8 @@
 #pragma once
 #include "Support.h"
 
+#include <chrono>
+
 class Characters
 {
 private:
@@ -12,28 +14,35 @@ protected:
 	sec _moveInterval;
 	sec _timer;
 
-	characters::Position _pos;
-	characters::Position _lastPosition;
+    std::chrono::steady_clock::time_point _lastCall;
+
+    position_space::Position _pos;
+    position_space::Position _lastPosition;
 	characters::DIRECTION _dir;
 
 	bool isCollusion(characters::DIRECTION d);
 
 	virtual void calcDirection() = 0;
+    virtual void setPositionToSHM() = 0;
+    virtual void setAppearanceToSHM() = 0;
+    virtual void setDirToSHM() = 0;
 
-	drawer::ConsoleSymbolData _appearance;
+    appearance_space::ConsoleSymbolData _appearance;
 
 public:
-	characters::Position getPosition();
-	void move(sec delta);
+    position_space::Position getPosition();
+    void move();
 
 	characters::DIRECTION getDir();
 
 	virtual void resetPosition() = 0;
 
 	void setMoveInterval(sec interval);
-	drawer::ConsoleSymbolData getAppearance();
+    appearance_space::ConsoleSymbolData getAppearance();
 
-	Characters(characters::Position pos, drawer::ConsoleSymbolData a, sec interval);
+    void setAppearance(const appearance_space::ConsoleSymbolData& appearance);
+
+    Characters(position_space::Position pos, appearance_space::ConsoleSymbolData a, sec interval);
 
 	virtual ~Characters() {}
 };

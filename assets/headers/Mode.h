@@ -9,10 +9,10 @@ protected:
 
 	bool _isOver;
 
-	virtual characters::Position calcTargetPoint() = 0;
+    virtual position_space::Position calcTargetPoint() = 0;
 public:
 	bool isOver();
-	characters::Position modeTurn(sec delta);
+    position_space::Position modeTurn(sec delta);
 
 	virtual ~Mode() {}
 	Mode(sec duration);

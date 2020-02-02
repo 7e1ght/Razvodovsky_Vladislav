@@ -1,58 +1,60 @@
 #include "Characters.h"
-#include <conio.h>
+
 #include "Support.h"
 
-using namespace gamefield;
-using namespace characters;
 
-Position Characters::getPosition()
+position_space::Position Characters::getPosition()
 {
 	return _pos;
 }
 
 inline void Characters::changePosition()
 {
+    using dir = characters::DIRECTION;
+    namespace gf = gamefield;
+
 	switch (_dir)
 	{
-	case UP:
+    case dir::UP:
 		_pos.y -= 1;
 		break;
-	case DOWN:
+    case dir::DOWN:
 		_pos.y += 1;
 		break;
-	case RIGHT:
+    case dir::RIGHT:
 		_pos.x += 1;
-		if (_pos.x >= GAMEFIELD_ROW-1) _pos.x = 0;
+        if (_pos.x >= gf::GAMEFIELD_ROW-1) _pos.x = 0;
 		break;
-	case LEFT:
+    case dir::LEFT:
 		_pos.x -= 1;
-		if (_pos.x <= 0) _pos.x = GAMEFIELD_ROW - 1;
+        if (_pos.x <= 0) _pos.x = gf::GAMEFIELD_ROW - 1;
 		break;
 	default:
 		break;
 	}
 }
 
-void Characters::move(sec delta)
+void Characters::move()
 {
-	_timer += delta;
+    calcDirection();
 
-	_moveTimer += delta;
+    if (std::chrono::duration<float>(std::chrono::steady_clock::now() - _lastCall).count() >= _moveInterval)
+    {
 
-	calcDirection();
+        if (isCollusion(_dir) == false)
+        {
+            _lastPosition = _pos;
+            changePosition();
 
-	if (_moveTimer >= _moveInterval)
-	{
 
-		if (isCollusion(_dir) == false) 
-		{ 
-			_lastPosition = _pos;
-			changePosition();
-		}
+            setPositionToSHM();
+        }
 			
+        _moveTimer = 0.f;
 
-		_moveTimer = 0.f;
-	}	
+        _lastCall = std::chrono::steady_clock::now();
+
+    }
 }
 
 characters::DIRECTION Characters::getDir()
@@ -65,21 +67,29 @@ void Characters::setMoveInterval(sec interval)
 	_moveInterval = interval;
 }
 
-drawer::ConsoleSymbolData Characters::getAppearance()
+appearance_space::ConsoleSymbolData Characters::getAppearance()
 {
-	return _appearance;
+    return _appearance;
 }
 
-bool Characters::isCollusion(DIRECTION d)
+void Characters::setAppearance(const appearance_space::ConsoleSymbolData &appearance)
 {
-	using namespace game_scene;
+    _appearance = appearance;
+    setAppearanceToSHM();
+}
+
+bool Characters::isCollusion(characters::DIRECTION d)
+{
+    using namespace characters;
+    using namespace map_space;
+    using namespace id_space;
 
 	unsigned short heroX = _pos.x;
 	unsigned short heroY = _pos.y;
 
 	bool isBlock = false;
 
-	if (UP == d && (WALL == BLOCK_MAP[heroY - 1][heroX] || DOOR == BLOCK_MAP[heroY - 1][heroX])) 
+    if (UP == d && (WALL == BLOCK_MAP[heroY - 1][heroX] || DOOR == BLOCK_MAP[heroY - 1][heroX]))
 		isBlock = true;
 	else if (DOWN == d && (WALL == BLOCK_MAP[heroY + 1][heroX] || DOOR == BLOCK_MAP[heroY + 1][heroX]))
 		isBlock = true;
@@ -92,8 +102,8 @@ bool Characters::isCollusion(DIRECTION d)
 }
 
 
-Characters::Characters(characters::Position pos, drawer::ConsoleSymbolData a, sec interval) : 
+Characters::Characters(position_space::Position pos, appearance_space::ConsoleSymbolData a, sec interval) :
 	_timer(0.0f), _moveTimer(0.0f), _pos(pos), _appearance(a), _dir(characters::STOP), _moveInterval(interval),
-	_lastPosition{-1, -1}
+    _lastPosition{-1, -1}, _lastCall(std::chrono::steady_clock::now())
 {
 }

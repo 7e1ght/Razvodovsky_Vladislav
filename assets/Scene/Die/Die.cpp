@@ -1,36 +1,26 @@
 #include "Die.h"
 
-#include <fstream>
-#include <iostream>
-#include <time.h>
+#include <chrono>
 
-scene::SCENE_ID Die::update()
+id_space::SCENE_ID Die::update(sec)
 {
+    clear();
 
-	_drawer->clearCanvas();
-	_drawer->setRectangle(gamefield::DIE_MAP, 0, 10, drawer::BLACK, drawer::RED);
+    utilities_space::NCSupport.addSymbol("RED_BLOCK", ' ', COLOR_BLACK, COLOR_RED);
 
-	return scene::BEFORE_BIG_BANG;
+    std::chrono::steady_clock::time_point lastCall = std::chrono::steady_clock::now();
+
+    while(std::chrono::steady_clock::now() - lastCall < std::chrono::seconds(2))
+    {
+        utilities_space::NCSupport.drawRect(position_space::DIE_SCREEN_POSITION, map_space::DIE_MAP, utilities_space::NCSupport.getAppearance("RED_BLOCK"));
+
+        refresh();
+    }
+
+
+    return id_space::SCENE_ID::BEFORE_BIG_BANG;
 }
 
-Die::Die(std::unique_ptr<Drawer>& d) : Scene(d)
+Die::Die()
 {
-	std::ifstream in("die.txt");
-
-	if (in.is_open())
-	{
-		for (int i = 0; i < drawer::CANVAS_ROW; ++i)
-		{
-			for (int j = 0; j < drawer::CANVAS_COLUMN; ++j)
-			{
-				int c;
-				in >> c;
-				_screen[i][j] = c;
-			}
-		}
-	}
-	else
-	{
-		std::cerr << "Can not open file" << std::endl;
-	}
 }

@@ -1,6 +1,6 @@
 #include "Lose.h"
 
-#include <conio.h>
+#include <ncurses.h>
 #include <string>
 
 inline void Lose::enterPressed()
@@ -8,38 +8,43 @@ inline void Lose::enterPressed()
 	switch (_currentChoose)
 	{
 	case CHOOSE::MAIN_MENU:
-		_returnScene = scene::MAIN_MENU;
+        _returnScene = id_space::SCENE_ID::MAIN_MENU;
 		break;
 	case CHOOSE::NEW_GAME:
-		_returnScene = scene::GAME;
+        _returnScene = id_space::SCENE_ID::GAME;
 		break;
 	}
 }
 
-scene::SCENE_ID Lose::update()
+id_space::SCENE_ID Lose::update(sec delta)
 {
-	bool outLoop = false;
+//	bool outLoop = false;
 
-	while(outLoop == false)
-	{
+//	while(outLoop == false)
+//	{
 		std::string startStr = "   Main menu";
 		std::string quitStr = "   New game";
 
 
-		if(_kbhit())
+        if(utilities_space::kbhit())
 		{
-			switch(_getch())
+            switch(getch())
 			{
-				case 'W': case 'w':
-					_currentChoose = CHOOSE::MAIN_MENU;
-					break;
-				case 'S': case 's':
-					_currentChoose = CHOOSE::NEW_GAME;
-					break;
-				case main_menu::ENTER_KEY_CODE:
-					enterPressed();
-					outLoop = true;
-					break;
+            case 'W':
+            case 'w':
+            case KEY_UP:
+                _currentChoose = CHOOSE::MAIN_MENU;
+                break;
+            case 'S':
+            case 's':
+            case KEY_DOWN:
+                _currentChoose = CHOOSE::NEW_GAME;
+                break;
+            case KEY_ENTER:
+            case scene::ENTER_KEY:
+                enterPressed();
+//					outLoop = true;
+                break;
 			}
 		}
 
@@ -53,21 +58,21 @@ scene::SCENE_ID Lose::update()
 				quitStr[0] = '-';
 				quitStr[1] = '>';
 				break;
-
 			default:
 				break;
 		}
 
-		_drawer->setText(startStr.c_str(), 10, 10, drawer::LIGHT_GRAY, drawer::BLACK);
-		_drawer->setText(quitStr.c_str(), 10, 12, drawer::LIGHT_GRAY, drawer::BLACK);
+        utilities_space::NCSupport.drawText(startStr, position_space::Position(10, 10));
+        utilities_space::NCSupport.drawText(quitStr, position_space::Position(10, 12));
 
-		_drawer->draw();
-	}
+        refresh();
+//	}
 
 	return _returnScene;
 }
 
-Lose::Lose(std::unique_ptr<Drawer>& d) : Scene(d), _returnScene(scene::LOSE), _currentChoose(CHOOSE::MAIN_MENU)
+Lose::Lose()
+    : _returnScene(id_space::SCENE_ID::LOSE), _currentChoose(CHOOSE::MAIN_MENU)
 {
 
 }

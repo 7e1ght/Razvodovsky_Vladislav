@@ -9,7 +9,7 @@ class MainMenu :
 	public Scene
 {
 private:
-	scene::SCENE_ID _returnScene;
+    id_space::SCENE_ID _returnScene;
 
 	enum CHOOSE
 	{
@@ -20,8 +20,8 @@ private:
 	CHOOSE _currentChoose;
 	void enterPressed();
 public:
-	scene::SCENE_ID update();
+    id_space::SCENE_ID update(sec delta);
 
-	MainMenu(std::unique_ptr<Drawer>& d);
+    MainMenu();
 };
 

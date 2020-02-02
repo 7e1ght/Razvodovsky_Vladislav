@@ -1,36 +1,47 @@
 #include "PinkyChase.h"
 
-inline characters::Position PinkyChase::calcFuturePos()
+inline position_space::Position PinkyChase::calcFuturePos()
 {
-	using namespace characters;
+    using namespace position_space;
+    using namespace characters;
 
-	Position playerPos = _player->getPosition();
+    Position playerPos = utilities_space::SHMHellper::getDataSHM<position_space::Position>(shm_space::playerPrefix + shm_space::positionTag);
+    Position temp;
 
-	switch (_player->getDir())
+    switch (utilities_space::SHMHellper::getDataSHM<characters::DIRECTION>(shm_space::playerPrefix + shm_space::dirTag))
 	{
 	case UP:
-		return { playerPos.x, playerPos.y - 4 };
-	case DOWN:
-		return { playerPos.x, playerPos.y + 4 };
-	case LEFT:
-		return { playerPos.x - 4, playerPos.y };
-	case RIGHT:
-		return { playerPos.x + 4, playerPos.y };
+        temp.x = playerPos.x;
+        temp.y = playerPos.y - 4;
+        break;
+    case DOWN:
+        temp.x = playerPos.x;
+        temp.y = playerPos.y + 4;
+        break;
+    case LEFT:
+        temp.x = playerPos.x - 4;
+        temp.y = playerPos.y;
+        break;
+    case RIGHT:
+        temp.x = playerPos.x + 4;
+        temp.y = playerPos.y;
+        break;
 	default:
-		return { -1, -1 };
+        temp.x = -1;
+        temp.y = -1;
+        break;
 	}
+
+    return temp;
 }
 
-characters::Position PinkyChase::calcTargetPoint()
+position_space::Position PinkyChase::calcTargetPoint()
 {
-	if (_player)
-	{
-		return calcFuturePos();
-	}
+    return calcFuturePos();
 }
 
-PinkyChase::PinkyChase(sec duraction, std::shared_ptr<Characters> player) :
-	Mode(duraction), _player(player)
+PinkyChase::PinkyChase(sec duraction) :
+    Mode(duraction)
 {
 
 }

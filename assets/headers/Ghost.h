@@ -11,13 +11,13 @@ protected:
 	std::shared_ptr<Mode> _stdMode;
 	std::shared_ptr<Mode> _mode;
 
-	characters::Position _targetPoint;
+    position_space::Position _targetPoint;
 
 	sec _lastCall;
 
 	bool _isInitialized;
 
-	float calcDistanceToTargetPoint(characters::Position pos);
+    float calcDistanceToTargetPoint(position_space::Position pos);
 	void calcDirection() override;
 public:
 	void setStdMode();
@@ -31,7 +31,7 @@ public:
 
 	void init();
 
-	Ghost(characters::Position pos, drawer::ConsoleSymbolData a, sec interval);
+    Ghost(position_space::Position pos, appearance_space::ConsoleSymbolData a, sec interval);
 	virtual ~Ghost() {}
 };
 

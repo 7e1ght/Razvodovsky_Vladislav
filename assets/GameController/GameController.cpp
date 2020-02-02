@@ -9,51 +9,65 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <ncurses.h>
 
 void GameController::startGame()
 {
-	scene::SCENE_ID currentScene = scene::MAIN_MENU, lastScene = scene::BEFORE_BIG_BANG;
+    id_space::SCENE_ID currentScene = id_space::SCENE_ID::MAIN_MENU;
+    id_space::SCENE_ID lastScene = id_space::SCENE_ID::BEFORE_BIG_BANG;
 
-	while (true)
-	{
-		_drawer->clearCanvas();
-		
+    std::chrono::steady_clock::time_point lastCall = std::chrono::steady_clock::now();
+    std::chrono::duration<float> elapseTime = std::chrono::duration<float>::zero();
+
+    bool outLoop = false;
+    while (outLoop == false)
+    {
 		switch (currentScene)
 		{
-		case scene::MAIN_MENU:
-			if (currentScene != lastScene)
-			{
-				_currentScene.reset(new MainMenu(_drawer));
-				lastScene = scene::MAIN_MENU;
-			}
-			currentScene = _currentScene->update();
-			break;
-		case scene::GAME:
-			if (currentScene != lastScene)
-			{
-				_currentScene.reset(new Game(_drawer));
-				lastScene = scene::GAME;
-			}
-			currentScene =  _currentScene->update();
-			break;
-		case scene::LOSE:
-			if (currentScene != lastScene)
-			{
-				_currentScene.reset(new Lose(_drawer));
-				lastScene = scene::LOSE;
-			}
 
-			currentScene = _currentScene->update();
+        case id_space::SCENE_ID::MAIN_MENU:
+			if (currentScene != lastScene)
+			{
+                _currentScene.reset(new MainMenu);
+                lastScene = id_space::SCENE_ID::MAIN_MENU;
+                clear();
+            }
+			break;
+        case id_space::SCENE_ID::GAME:
+			if (currentScene != lastScene)
+			{
+                _currentScene.reset(new Game);
+                lastScene = id_space::SCENE_ID::GAME;
+                clear();
+            }
+			break;
+        case id_space::SCENE_ID::LOSE:
+			if (currentScene != lastScene)
+			{
+                _currentScene.reset(new Lose);
+                lastScene = id_space::SCENE_ID::LOSE;
+                clear();
+            }
+			break;
+        case id_space::SCENE_ID::END_GAME:
+            outLoop = true;
+            break;
 
-			break;
-		default:
-			break;
-		}
+        default:
+            break;
+        }
+
+        currentScene = _currentScene->update(elapseTime.count());
+
+        refresh();
+
+        elapseTime = std::chrono::steady_clock::now() - lastCall;
+        lastCall = std::chrono::steady_clock::now();
 	}
 }
 
-GameController::GameController() :
-	_drawer(new Drawer), _currentScene(nullptr)
+GameController::GameController()
+    : _currentScene(nullptr)
 {
 
 }

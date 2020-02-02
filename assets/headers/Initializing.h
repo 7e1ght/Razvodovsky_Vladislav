@@ -4,7 +4,7 @@ class Initializing :
 	public Mode
 {
 private:
-	characters::Position calcTargetPoint() override;
+    position_space::Position calcTargetPoint() override;
 
 public:
 	Initializing(sec duraction);

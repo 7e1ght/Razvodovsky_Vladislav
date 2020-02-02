@@ -9,11 +9,9 @@ class BlinkyChase :
 	public Mode
 {
 private:
-	std::shared_ptr<Characters> _player;
-
-	characters::Position calcTargetPoint();
+    position_space::Position calcTargetPoint() override;
 public:
 
-	BlinkyChase(sec duraction, std::shared_ptr<Characters> player);
+    BlinkyChase(sec duraction);
 };
 

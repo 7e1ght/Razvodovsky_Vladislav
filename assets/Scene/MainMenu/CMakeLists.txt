@@ -3,4 +3,8 @@ project(MainMenu)
 
 add_library(${PROJECT_NAME} ${HEADERS_DIR}/MainMenu.h MainMenu.cpp)
 
-target_link_libraries(${PROJECT_NAME} Scene)
+target_link_libraries(${PROJECT_NAME}
+    ${CURSES_LIBRARIES}
+    Scene
+    Support
+    )
