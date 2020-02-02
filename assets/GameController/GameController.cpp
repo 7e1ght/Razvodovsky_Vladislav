@@ -13,15 +13,15 @@
 
 void GameController::startGame()
 {
-    id_space::SCENE_ID currentScene = id_space::SCENE_ID::MAIN_MENU, lastScene = id_space::SCENE_ID::BEFORE_BIG_BANG;
+    id_space::SCENE_ID currentScene = id_space::SCENE_ID::MAIN_MENU;
+    id_space::SCENE_ID lastScene = id_space::SCENE_ID::BEFORE_BIG_BANG;
 
-    sec delta = 0.0f, start = 0.0f;
+    std::chrono::steady_clock::time_point lastCall = std::chrono::steady_clock::now();
+    std::chrono::duration<float> elapseTime = std::chrono::duration<float>::zero();
 
     bool outLoop = false;
     while (outLoop == false)
-	{
-        start = clock();
-		
+    {
 		switch (currentScene)
 		{
 
@@ -31,8 +31,7 @@ void GameController::startGame()
                 _currentScene.reset(new MainMenu);
                 lastScene = id_space::SCENE_ID::MAIN_MENU;
                 clear();
-			}
-            currentScene = _currentScene->update(delta);
+            }
 			break;
         case id_space::SCENE_ID::GAME:
 			if (currentScene != lastScene)
@@ -40,8 +39,7 @@ void GameController::startGame()
                 _currentScene.reset(new Game);
                 lastScene = id_space::SCENE_ID::GAME;
                 clear();
-			}
-            currentScene =  _currentScene->update(delta);
+            }
 			break;
         case id_space::SCENE_ID::LOSE:
 			if (currentScene != lastScene)
@@ -49,10 +47,7 @@ void GameController::startGame()
                 _currentScene.reset(new Lose);
                 lastScene = id_space::SCENE_ID::LOSE;
                 clear();
-			}
-
-            currentScene = _currentScene->update(delta);
-
+            }
 			break;
         case id_space::SCENE_ID::END_GAME:
             outLoop = true;
@@ -60,11 +55,14 @@ void GameController::startGame()
 
         default:
             break;
-		}
+        }
 
-        delta = (clock() - start)/CLOCKS_PER_SEC;
+        currentScene = _currentScene->update(elapseTime.count());
 
         refresh();
+
+        elapseTime = std::chrono::steady_clock::now() - lastCall;
+        lastCall = std::chrono::steady_clock::now();
 	}
 }
 

@@ -7,16 +7,24 @@ inline void Player::changeDirection()
 
     switch (getch())
 	{
-	case 'W': case 'w':
+    case 'W':
+    case 'w':
+    case KEY_UP:
 		_nextDir = UP;
 		break;
-	case 'A': case 'a':
+    case 'A':
+    case 'a':
+    case KEY_LEFT:
 		_nextDir = LEFT;
 		break;
-	case 'S': case 's':
+    case 'S':
+    case 's':
+    case KEY_DOWN:
 		_nextDir = DOWN;
 		break;
-	case 'D': case 'd':
+    case 'D':
+    case 'd':
+    case KEY_RIGHT:
 		_nextDir = RIGHT;
 		break;
 	default:

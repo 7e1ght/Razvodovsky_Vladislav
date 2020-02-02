@@ -5,11 +5,14 @@
 #include <string>
 #include <map>
 
+#include <sys/mman.h>
+
 typedef float sec;
 
 namespace scene
 {
     const float NO_DELTA = 0.f;
+    const int ENTER_KEY = 10;
 }
 
 namespace gamefield
@@ -238,21 +241,84 @@ const unsigned DOOR_SIZE = 3;
 }
 namespace utilities_space
 {
-    bool kbhit();
 
-    class NCursesSupport
+bool kbhit();
+
+class NCursesSupport
+{
+private:
+    std::map<std::string, appearance_space::ConsoleSymbolData> userAppearance;
+public:
+    void initColors();
+
+    void drawChar(const position_space::Position& p, const appearance_space::ConsoleSymbolData& appearance);
+    void drawText(const std::string& text, const position_space::Position& p, const appearance_space::ConsoleSymbolData& appearance = appearance_space::DEFAULT_TEXT_APPREARANCE);
+
+    void drawRect(const position_space::Position& p, const std::vector<std::vector<char>>& rectData, const appearance_space::ConsoleSymbolData& appearance);
+
+    void addSymbol(const std::string& appearanceName, const char symbol, const short foreground, const short background);
+    appearance_space::ConsoleSymbolData getAppearance(const std::string& appearanceName);
+} static NCSupport;
+
+class SHMHellper
+{
+private:
+    static std::map<std::string, int> _nameFd;
+
+    SHMHellper() = delete;
+    SHMHellper(const SHMHellper&) = delete;
+    SHMHellper operator=(const SHMHellper&) = delete;
+public:
+    static void createSHM(const std::string& shmName, const size_t size);
+    static void connectSHM(const std::string& shmName);
+    template<typename T>
+    static void setDataSHM(const T& data, const std::string& shmName);
+    template<typename T>
+    static T getDataSHM(const std::string& shmName);
+
+    ~SHMHellper();
+};
+
+
+
+template<typename T>
+void SHMHellper::setDataSHM(const T& data, const std::string& shmName)
+{
+    const T* dataPtr = &data;
+
+    const size_t dataSize = sizeof(data);
+
+    const char* dataByte = reinterpret_cast<const char*>(dataPtr);
+
+    char* mapRegion = static_cast<char*>(mmap(nullptr, dataSize, PROT_WRITE, MAP_SHARED, _nameFd[shmName], 0));
+
+    for(int i = 0; i < dataSize; ++i)
     {
-    private:
-        std::map<std::string, appearance_space::ConsoleSymbolData> userAppearance;
-    public:
-        void initColors();
+        mapRegion[i] = dataByte[i];
+    }
 
-        void drawChar(const position_space::Position& p, const appearance_space::ConsoleSymbolData& appearance);
-        void drawText(const std::string& text, const position_space::Position& p, const appearance_space::ConsoleSymbolData& appearance = appearance_space::DEFAULT_TEXT_APPREARANCE);
+    munmap(mapRegion, dataSize);
+}
 
-        void drawRect(const position_space::Position& p, const std::vector<std::vector<char>>& rectData, const appearance_space::ConsoleSymbolData& appearance);
+template<typename T>
+T SHMHellper::getDataSHM(const std::string& shmName)
+{
+    T tempFile;
 
-        void addSymbol(const std::string& appearanceName, const char symbol, const short foreground, const short background);
-        appearance_space::ConsoleSymbolData getAppearance(const std::string& appearanceName);
-    } static NCSupport;
+    char* tempFileByte = reinterpret_cast<char*>(&tempFile);
+
+    const size_t dataSize = sizeof(T);
+
+    char* mapRegion = static_cast<char*>(mmap(nullptr, dataSize, PROT_READ, MAP_SHARED, _nameFd[shmName], 0));
+
+    for(int i = 0; i < dataSize; ++i)
+    {
+        tempFileByte[i] = mapRegion[i];
+    }
+
+    munmap(mapRegion, dataSize);
+
+    return tempFile;
+}
+
 }

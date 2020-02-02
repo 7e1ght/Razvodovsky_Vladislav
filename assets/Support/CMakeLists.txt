@@ -5,3 +5,7 @@ add_library(${PROJECT_NAME}
     ${HEADERS_DIR}/Support.h
     Support.cpp
     )
+
+target_link_libraries(${PROJECT_NAME}
+    rt
+    )

@@ -1,8 +1,15 @@
 #include "Support.h"
 
+
+#include <algorithm>
+
+#include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
 
 using namespace utilities_space;
 
@@ -88,7 +95,55 @@ void NCursesSupport::addSymbol(const std::string& appearanceName, const char sym
     userAppearance.emplace(appearanceName, temp);
     ++colorId;
 }
+
 appearance_space::ConsoleSymbolData NCursesSupport::getAppearance(const std::string& appearanceName)
 {
     return userAppearance[appearanceName];
 }
+
+
+/////////////////
+// SHMHellper //
+///////////////
+
+std::map<std::string, int> SHMHellper::_nameFd;
+
+void SHMHellper::createSHM(const std::string &shmName, const size_t size)
+{
+    size_t fd = shm_open(shmName.c_str(), O_CREAT | O_RDWR, 0777);
+    if(fd == -1)
+    {
+        perror("fd");
+        return;
+    }
+
+    _nameFd.emplace(shmName, fd);
+
+    if(ftruncate(fd, size) == -1)
+    {
+        perror("sizing");
+        return;
+    }
+}
+
+void SHMHellper::connectSHM(const std::string &shmName)
+{
+    size_t fd = shm_open(shmName.c_str(), O_RDWR, 0777);
+    if(fd ==  -1)
+    {
+        perror("fd");
+        return;
+    }
+
+    _nameFd.emplace(shmName, fd);
+}
+
+SHMHellper::~SHMHellper()
+{
+    for(auto& pair: _nameFd)
+    {
+        shm_unlink(pair.first.c_str());
+    }
+}
+
+

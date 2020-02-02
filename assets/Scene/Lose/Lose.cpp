@@ -30,16 +30,21 @@ id_space::SCENE_ID Lose::update(sec delta)
 		{
             switch(getch())
 			{
-				case 'W': case 'w':
-					_currentChoose = CHOOSE::MAIN_MENU;
-					break;
-				case 'S': case 's':
-					_currentChoose = CHOOSE::NEW_GAME;
-					break;
-                case KEY_ENTER:
-					enterPressed();
+            case 'W':
+            case 'w':
+            case KEY_UP:
+                _currentChoose = CHOOSE::MAIN_MENU;
+                break;
+            case 'S':
+            case 's':
+            case KEY_DOWN:
+                _currentChoose = CHOOSE::NEW_GAME;
+                break;
+            case KEY_ENTER:
+            case scene::ENTER_KEY:
+                enterPressed();
 //					outLoop = true;
-					break;
+                break;
 			}
 		}
 
@@ -53,7 +58,6 @@ id_space::SCENE_ID Lose::update(sec delta)
 				quitStr[0] = '-';
 				quitStr[1] = '>';
 				break;
-
 			default:
 				break;
 		}

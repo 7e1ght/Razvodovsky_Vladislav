@@ -1,5 +1,6 @@
 ﻿#include "GameController.h"
 #include <ncurses.h>
+#include <iostream>
 
 int main()
 {

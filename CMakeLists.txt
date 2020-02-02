@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(EXECUTABLE_OUTPUT_PATH bin)
 
 set(HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/assets/headers)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread ")
+set(PROC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ghosts_proc)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -lrt")
 
 find_package(Curses REQUIRED)
 

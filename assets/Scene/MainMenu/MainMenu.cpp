@@ -29,14 +29,18 @@ id_space::SCENE_ID MainMenu::update(sec delta)
 		{
             switch (getch())
 			{
-			case 'W': case 'w':
+            case 'W':
+            case 'w':
+            case KEY_UP:
 				_currentChoose = CHOOSE::START_GAME;
 				break;
-			case 'S': case 's':
+            case 'S':
+            case 's':
+            case KEY_DOWN:
 				_currentChoose = CHOOSE::QUIT;
 				break;
-            case KEY_ENTER
-            :
+            case KEY_ENTER:
+            case scene::ENTER_KEY:
 				enterPressed();
 //				isEnterPressed = true;
 				break;
