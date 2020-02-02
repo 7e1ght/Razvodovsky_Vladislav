@@ -45,15 +45,16 @@ void Characters::move()
         {
             _lastPosition = _pos;
             changePosition();
+
+
+            setPositionToSHM();
         }
 			
         _moveTimer = 0.f;
 
         _lastCall = std::chrono::steady_clock::now();
-        setPositionToSHM();
+
     }
-
-
 }
 
 characters::DIRECTION Characters::getDir()

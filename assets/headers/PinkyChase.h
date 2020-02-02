@@ -10,13 +10,11 @@ class PinkyChase :
 	public Mode
 {
 private:
-	std::shared_ptr<Characters> _player;
-
     position_space::Position calcFuturePos();
 
     position_space::Position calcTargetPoint();
 public:
 
-	PinkyChase(sec duraction, std::shared_ptr<Characters> player);
+    PinkyChase(sec duraction);
 };
 

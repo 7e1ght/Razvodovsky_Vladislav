@@ -13,6 +13,10 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Clyde(std::shared_ptr<Characters> player);
+    void setPositionToSHM() override;
+    void setAppearanceToSHM() override;
+    void setDirToSHM() override;
+
+    Clyde();
 };
 

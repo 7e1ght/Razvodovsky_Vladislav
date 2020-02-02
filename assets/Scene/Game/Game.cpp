@@ -5,6 +5,7 @@
 #include <ncurses.h>
 #include <spawn.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "Game.h"
 #include "Support.h"
@@ -216,7 +217,10 @@ inline void Game::checkMapEvent()
 Game::Game()
     : _score(0), _timer(0.f), _life(3), _state(game_scene::PLAY), _sceneId(id_space::SCENE_ID::GAME),
       _dieScreenTimer(0.f), pause(true),
-      _blinky(new utilities_space::CharacterShmWrapper(shm_space::blinkyPrefix))
+      _blinky(new utilities_space::CharacterShmWrapper(shm_space::blinkyPrefix)),
+      _clyde(new utilities_space::CharacterShmWrapper(shm_space::clydePrefix)),
+      _pinky(new utilities_space::CharacterShmWrapper(shm_space::pinkyPrefix)),
+      _inky(new utilities_space::CharacterShmWrapper(shm_space::inkyPrefix))
 {
 	using namespace game_scene;
     utilities_space::SHMHellper::createSHM(shm_space::gameShmStateName, sizeof(game_scene::STATE));
@@ -227,11 +231,26 @@ Game::Game()
     _mainHero = std::make_shared<Player>();
 
     _characters.push_back(_blinky);
+    _characters.push_back(_clyde);
+    _characters.push_back(_pinky);
+    _characters.push_back(_inky);
 
     pid_t pid;
     char* argv[] = {(char*)0};
-    posix_spawn(&pid, "/home/vlad/projects/qt/Razvodovsky_Vladislav/ghosts_proc/BlinkyMain", nullptr, nullptr, argv, environ);
+    posix_spawn(&pid, "../ghosts_proc/BlinkyMain", nullptr, nullptr, argv, environ);
     utilities_space::SHMHellper::connectSHM(shm_space::blinkyPrefix + shm_space::positionTag);
     utilities_space::SHMHellper::connectSHM(shm_space::blinkyPrefix + shm_space::appearanceTag);
+
+    posix_spawn(&pid, "../ghosts_proc/ClydeMain", nullptr, nullptr, argv, environ);
+    utilities_space::SHMHellper::connectSHM(shm_space::clydePrefix + shm_space::positionTag);
+    utilities_space::SHMHellper::connectSHM(shm_space::clydePrefix + shm_space::appearanceTag);
+
+    posix_spawn(&pid, "../ghosts_proc/InkyMain", nullptr, nullptr, argv, environ);
+    utilities_space::SHMHellper::connectSHM(shm_space::inkyPrefix + shm_space::positionTag);
+    utilities_space::SHMHellper::connectSHM(shm_space::inkyPrefix + shm_space::appearanceTag);
+
+    posix_spawn(&pid, "../ghosts_proc/PinkyMain", nullptr, nullptr, argv, environ);
+    utilities_space::SHMHellper::connectSHM(shm_space::pinkyPrefix + shm_space::positionTag);
+    utilities_space::SHMHellper::connectSHM(shm_space::pinkyPrefix + shm_space::appearanceTag);
 }
 

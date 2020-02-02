@@ -13,6 +13,10 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Inky(std::shared_ptr<Characters> player, std::shared_ptr<Characters> blinky);
+    void setPositionToSHM() override;
+    void setAppearanceToSHM() override;
+    void setDirToSHM() override;
+
+    Inky();
 };
 

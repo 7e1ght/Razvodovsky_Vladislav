@@ -349,6 +349,7 @@ public:
     appearance_space::ConsoleSymbolData getAppearance();
 
     CharacterShmWrapper(const std::string& shmName);
+    ~CharacterShmWrapper() {}
 };
 
 

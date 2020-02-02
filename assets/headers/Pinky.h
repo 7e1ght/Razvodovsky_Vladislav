@@ -12,6 +12,10 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Pinky(std::shared_ptr<Characters> player);
+    void setPositionToSHM() override;
+    void setAppearanceToSHM() override;
+    void setDirToSHM() override;
+
+    Pinky();
 };
 

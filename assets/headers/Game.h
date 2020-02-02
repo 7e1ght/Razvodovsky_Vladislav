@@ -30,6 +30,9 @@ private:
     std::shared_ptr<Characters> _mainHero;
 
     std::shared_ptr<utilities_space::CharacterShmWrapper> _blinky;
+    std::shared_ptr<utilities_space::CharacterShmWrapper> _clyde;
+    std::shared_ptr<utilities_space::CharacterShmWrapper> _pinky;
+    std::shared_ptr<utilities_space::CharacterShmWrapper> _inky;
 
     std::vector<std::shared_ptr<utilities_space::CharacterShmWrapper>> _characters;
 

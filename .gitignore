@@ -56,7 +56,7 @@ _deps
 .vscode/
 
 ### Qt Folders ###
-
+builds/
+bin/
 
 # End of https://www.gitignore.io/api/cmake,c++
-builds/

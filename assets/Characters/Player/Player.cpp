@@ -37,6 +37,7 @@ void Player::calcDirection()
 	if (isCollusion(_nextDir) == false)
 	{
 		_dir = _nextDir;
+        setDirToSHM();
 	}
 
     if (utilities_space::kbhit())
