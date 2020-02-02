@@ -27,13 +27,11 @@ private:
 	game_scene::STATE _state;
     id_space::SCENE_ID _sceneId;
 
-	std::shared_ptr<Characters> _mainHero;
-	std::shared_ptr<Characters> _blinky;
-	std::shared_ptr<Characters> _pinky;
-	std::shared_ptr<Characters> _inky;
-	std::shared_ptr<Characters> _clyde;
+    std::shared_ptr<Characters> _mainHero;
 
-	std::vector<std::shared_ptr<Characters>> _characters;
+    std::shared_ptr<utilities_space::CharacterShmWrapper> _blinky;
+
+    std::vector<std::shared_ptr<utilities_space::CharacterShmWrapper>> _characters;
 
 	void doMove(const sec delta);
 
@@ -47,6 +45,10 @@ private:
     void drawSymbol(unsigned x, unsigned y, appearance_space::ConsoleSymbolData apprearance);
     void drawText(const std::string& text, const int x, const int y, const appearance_space::ConsoleSymbolData& appearance = appearance_space::DEFAULT_TEXT_APPREARANCE);
 
+    void setStateToSHM()
+    {
+        utilities_space::SHMHellper::setDataSHM(_state, shm_space::gameShmStateName);
+    }
 	// for non-nest
 	void fillRow(const int row);
 

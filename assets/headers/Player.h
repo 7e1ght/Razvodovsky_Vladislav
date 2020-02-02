@@ -9,6 +9,10 @@ private:
 
 	void calcDirection() override;
 
+    void setPositionToSHM() override;
+    void setAppearanceToSHM() override;
+    void setDirToSHM() override;
+
 	// for non-nest
 	void changeDirection();
 

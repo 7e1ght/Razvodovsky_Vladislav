@@ -1,11 +1,13 @@
 #include "BlinkyChase.h"
+#include <ncurses.h>
 
 position_space::Position BlinkyChase::calcTargetPoint()
 {
-	return _player->getPosition();
+    position_space::Position pPos = utilities_space::SHMHellper::getDataSHM<position_space::Position>(shm_space::playerPrefix + shm_space::positionTag);
+    return pPos;
 }
 
-BlinkyChase::BlinkyChase(sec duraction, std::shared_ptr<Characters> player) :
-	Mode(duraction), _player(player)
+BlinkyChase::BlinkyChase(sec duraction) :
+    Mode(duraction)
 {
 }

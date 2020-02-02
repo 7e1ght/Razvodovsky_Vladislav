@@ -2,6 +2,7 @@
 
 #include "Support.h"
 
+
 position_space::Position Characters::getPosition()
 {
 	return _pos;
@@ -33,26 +34,26 @@ inline void Characters::changePosition()
 	}
 }
 
-void Characters::move(sec delta)
+void Characters::move()
 {
-	_timer += delta;
+    calcDirection();
 
-	_moveTimer += delta;
+    if (std::chrono::duration<float>(std::chrono::steady_clock::now() - _lastCall).count() >= _moveInterval)
+    {
 
-	calcDirection();
-
-	if (_moveTimer >= _moveInterval)
-	{
-
-		if (isCollusion(_dir) == false) 
-		{ 
-			_lastPosition = _pos;
-			changePosition();
-		}
+        if (isCollusion(_dir) == false)
+        {
+            _lastPosition = _pos;
+            changePosition();
+        }
 			
+        _moveTimer = 0.f;
 
-		_moveTimer = 0.f;
-	}	
+        _lastCall = std::chrono::steady_clock::now();
+        setPositionToSHM();
+    }
+
+
 }
 
 characters::DIRECTION Characters::getDir()
@@ -67,7 +68,13 @@ void Characters::setMoveInterval(sec interval)
 
 appearance_space::ConsoleSymbolData Characters::getAppearance()
 {
-	return _appearance;
+    return _appearance;
+}
+
+void Characters::setAppearance(const appearance_space::ConsoleSymbolData &appearance)
+{
+    _appearance = appearance;
+    setAppearanceToSHM();
 }
 
 bool Characters::isCollusion(characters::DIRECTION d)
@@ -96,6 +103,6 @@ bool Characters::isCollusion(characters::DIRECTION d)
 
 Characters::Characters(position_space::Position pos, appearance_space::ConsoleSymbolData a, sec interval) :
 	_timer(0.0f), _moveTimer(0.0f), _pos(pos), _appearance(a), _dir(characters::STOP), _moveInterval(interval),
-	_lastPosition{-1, -1}
+    _lastPosition{-1, -1}, _lastCall(std::chrono::steady_clock::now())
 {
 }

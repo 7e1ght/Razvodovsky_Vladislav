@@ -113,7 +113,7 @@ void SHMHellper::createSHM(const std::string &shmName, const size_t size)
     size_t fd = shm_open(shmName.c_str(), O_CREAT | O_RDWR, 0777);
     if(fd == -1)
     {
-        perror("fd");
+        perror((shmName + " " + "fd").c_str());
         return;
     }
 
@@ -131,7 +131,7 @@ void SHMHellper::connectSHM(const std::string &shmName)
     size_t fd = shm_open(shmName.c_str(), O_RDWR, 0777);
     if(fd ==  -1)
     {
-        perror("fd");
+        perror((shmName + " " + "fd").c_str());
         return;
     }
 
@@ -146,4 +146,22 @@ SHMHellper::~SHMHellper()
     }
 }
 
+position_space::Position CharacterShmWrapper::getPosition()
+{
+    return SHMHellper::getDataSHM<position_space::Position>(_shmName + shm_space::positionTag);
+}
 
+characters::DIRECTION CharacterShmWrapper::getDir()
+{
+    return SHMHellper::getDataSHM<characters::DIRECTION>(_shmName + shm_space::dirTag);
+}
+
+appearance_space::ConsoleSymbolData CharacterShmWrapper::getAppearance()
+{
+    return SHMHellper::getDataSHM<appearance_space::ConsoleSymbolData>(_shmName + shm_space::appearanceTag);
+}
+
+CharacterShmWrapper::CharacterShmWrapper(const std::string &shmName)
+    : _shmName(shmName)
+{
+}

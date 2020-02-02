@@ -14,5 +14,9 @@ public:
 	void resetPosition() override;
 	void resetAppearance() override;
 
-	Blinky(std::shared_ptr<Characters> player);
+    void setPositionToSHM() override;
+    void setAppearanceToSHM() override;
+    void setDirToSHM() override;
+
+    Blinky();
 };

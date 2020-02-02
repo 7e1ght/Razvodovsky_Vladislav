@@ -45,6 +45,21 @@ void Player::calcDirection()
 	}
 }
 
+void Player::setPositionToSHM()
+{
+    utilities_space::SHMHellper::setDataSHM(getPosition(), shm_space::playerPrefix + shm_space::positionTag);
+}
+
+void Player::setAppearanceToSHM()
+{
+    utilities_space::SHMHellper::setDataSHM(getAppearance(), shm_space::playerPrefix + shm_space::appearanceTag);
+}
+
+void Player::setDirToSHM()
+{
+    utilities_space::SHMHellper::setDataSHM(getDir(), shm_space::playerPrefix + shm_space::dirTag);
+}
+
 void Player::resetPosition()
 {
     _pos = position_space::PLAYER_START_POSITION;
@@ -56,4 +71,11 @@ Player::Player() :
     Characters(position_space::PLAYER_START_POSITION, appearance_space::PLAYER_APPREARANCE, 0.25f),
 	_nextDir(characters::STOP)
 {
+    utilities_space::SHMHellper::createSHM(shm_space::playerPrefix + shm_space::positionTag, sizeof(position_space::Position));
+    utilities_space::SHMHellper::createSHM(shm_space::playerPrefix + shm_space::appearanceTag, sizeof(appearance_space::ConsoleSymbolData));
+    utilities_space::SHMHellper::createSHM(shm_space::playerPrefix + shm_space::dirTag, sizeof(characters::DIRECTION));
+
+    setPositionToSHM();
+    setAppearanceToSHM();
+    setDirToSHM();
 }

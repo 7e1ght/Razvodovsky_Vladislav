@@ -9,6 +9,23 @@
 
 typedef float sec;
 
+namespace shm_space
+{
+
+const std::string playerPrefix = "/player";
+
+const std::string blinkyPrefix = "/blinky";
+const std::string inkyPrefix = "/inky";
+const std::string clydePrefix = "/clyde";
+const std::string pinkyPrefix = "/pinky";
+
+const std::string appearanceTag = ".appearance";
+const std::string dirTag = ".dir";
+const std::string positionTag = ".position";
+
+const std::string gameShmStateName = "/game.state";
+}
+
 namespace scene
 {
     const float NO_DELTA = 0.f;
@@ -278,9 +295,6 @@ public:
 
     ~SHMHellper();
 };
-
-
-
 template<typename T>
 void SHMHellper::setDataSHM(const T& data, const std::string& shmName)
 {
@@ -299,7 +313,6 @@ void SHMHellper::setDataSHM(const T& data, const std::string& shmName)
 
     munmap(mapRegion, dataSize);
 }
-
 template<typename T>
 T SHMHellper::getDataSHM(const std::string& shmName)
 {
@@ -309,7 +322,7 @@ T SHMHellper::getDataSHM(const std::string& shmName)
 
     const size_t dataSize = sizeof(T);
 
-    char* mapRegion = static_cast<char*>(mmap(nullptr, dataSize, PROT_READ, MAP_SHARED, _nameFd[shmName], 0));
+    char* mapRegion = static_cast<char*>(mmap(nullptr, dataSize, PROT_READ | PROT_WRITE, MAP_SHARED, _nameFd[shmName], 0));
 
     for(int i = 0; i < dataSize; ++i)
     {
@@ -320,5 +333,23 @@ T SHMHellper::getDataSHM(const std::string& shmName)
 
     return tempFile;
 }
+
+
+class CharacterShmWrapper
+{
+private:
+    const std::string _shmName;
+
+    CharacterShmWrapper() = delete;
+    CharacterShmWrapper(const CharacterShmWrapper&) = delete;
+    CharacterShmWrapper operator=(const CharacterShmWrapper&) = delete;
+public:
+    position_space::Position getPosition();
+    characters::DIRECTION getDir();
+    appearance_space::ConsoleSymbolData getAppearance();
+
+    CharacterShmWrapper(const std::string& shmName);
+};
+
 
 }

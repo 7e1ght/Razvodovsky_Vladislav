@@ -17,4 +17,8 @@ Pinky::Pinky(std::shared_ptr<Characters> player) :
 	_mode = _stdMode;
 
 	_isInitialized = true;
+
+    setPositionToSHM();
+    setAppearanceToSHM();
+    setDirToSHM();
 }

@@ -3,6 +3,8 @@
 #include <string>
 #include <time.h>
 #include <ncurses.h>
+#include <spawn.h>
+#include <unistd.h>
 
 #include "Game.h"
 #include "Support.h"
@@ -17,6 +19,8 @@ namespace maps = map_space;
 
 id_space::SCENE_ID Game::update(sec delta)
 {
+    setStateToSHM();
+
     switch (_state)
     {
     case game_scene::LOSE:
@@ -30,6 +34,7 @@ id_space::SCENE_ID Game::update(sec delta)
     case game_scene::PAUSE:
         break;
     case game_scene::GHOST_EAT_ME:
+        resetAll();
         dieScreen();
         _state = game_scene::STATE::PLAY;
         clear();
@@ -86,7 +91,7 @@ void Game::drawBlockMap(const int row, const int column)
 
 inline void Game::sceneTurn(sec delta)
 {
-	if ((_mainHero && _blinky && _inky) == 0) return;
+    if (_mainHero == nullptr) return;
 
 	drawScore();
 	drawLife();
@@ -129,13 +134,24 @@ inline void Game::fillRow(const int row)
 
 inline void Game::drawCharacters(const int row, const int column)
 {
-	for (int i = 0; i < _characters.size(); ++i)
-	{
-		if (row == _characters[i]->getPosition().y && column == _characters[i]->getPosition().x)
+    for (int i = 0; i < _characters.size(); ++i)
+    {
+
+        if (row == _characters[i]->getPosition().y && column == _characters[i]->getPosition().x)
         {
             drawSymbol(column, row+1, _characters[i]->getAppearance());
         }
-	}
+
+    }
+
+    position_space::Position pPos = _mainHero->getPosition();
+
+    if (row == pPos.y
+        && column == pPos.x
+        )
+    {
+        drawSymbol(column, row+1, appearance_space::PLAYER_APPREARANCE);
+    }
 }
 
 inline void Game::drawScore()
@@ -152,8 +168,8 @@ inline void Game::drawLife()
 
 void Game::resetAll()
 {
-	for (int i = 0; i < _characters.size(); ++i)
-		_characters[i]->resetPosition();
+//	for (int i = 0; i < _characters.size(); ++i)
+//		_characters[i]->resetPosition();
 }
 
 inline void Game::dieScreen()
@@ -163,19 +179,15 @@ inline void Game::dieScreen()
 
 inline void Game::doMove(const sec delta)
 {
-	for (int i = 0; i < _characters.size(); ++i)
-    {
-        _characters[i]->move(delta);
-	}
+    _mainHero->move();
 }
 
 inline void Game::checkMapEvent()
 {
 	using namespace game_scene;
 
-	short
-		heroY = _mainHero->getPosition().y,
-		heroX = _mainHero->getPosition().x;
+    short heroY = _mainHero->getPosition().y;
+    short heroX = _mainHero->getPosition().x;
 
     if (bid::FOOD == _foods[heroY][heroX] )
 	{
@@ -188,38 +200,38 @@ inline void Game::checkMapEvent()
         _foods[heroY][heroX] = bid::SPACE;
 	}
 
-	for (int i = 1; i < _characters.size(); ++i)
-	{
-		if (_characters[i]->getPosition().x == heroX  
-			&& _characters[i]->getPosition().y == heroY)
-		{
-			--_life;
-			_state = game_scene::GHOST_EAT_ME;
-			if (_life == 0) _state = game_scene::LOSE;
-			resetAll();
-		}
-	}
+    for (int i = 0; i < _characters.size(); ++i)
+    {
+        if (_characters[i]->getPosition().x == heroX
+            && _characters[i]->getPosition().y == heroY)
+        {
+            --_life;
+            _state = game_scene::GHOST_EAT_ME;
+            if (_life == 0) _state = game_scene::LOSE;
+        }
+    }
 
 }
 
 Game::Game()
-    : _score(0), _timer(0.f), _life(3), _state(game_scene::PLAY), _sceneId(id_space::SCENE_ID::GAME), _dieScreenTimer(0.f), pause(true)
+    : _score(0), _timer(0.f), _life(3), _state(game_scene::PLAY), _sceneId(id_space::SCENE_ID::GAME),
+      _dieScreenTimer(0.f), pause(true),
+      _blinky(new utilities_space::CharacterShmWrapper(shm_space::blinkyPrefix))
 {
 	using namespace game_scene;
+    utilities_space::SHMHellper::createSHM(shm_space::gameShmStateName, sizeof(game_scene::STATE));
+    setStateToSHM();
 
     resetFood();
 
-	_mainHero = std::make_shared<Player>();
-	_blinky = std::make_shared<Blinky>(_mainHero);
-	_pinky = std::make_shared<Pinky>(_mainHero);
-	_inky = std::make_shared<Inky>(_mainHero, _blinky);
-	_clyde = std::make_shared<Clyde>(_mainHero);
+    _mainHero = std::make_shared<Player>();
 
-	_characters.push_back(_mainHero);
+    _characters.push_back(_blinky);
 
-	_characters.push_back(_blinky);
-	_characters.push_back(_pinky);
-	_characters.push_back(_inky);
-	_characters.push_back(_clyde);
+    pid_t pid;
+    char* argv[] = {(char*)0};
+    posix_spawn(&pid, "/home/vlad/projects/qt/Razvodovsky_Vladislav/ghosts_proc/BlinkyMain", nullptr, nullptr, argv, environ);
+    utilities_space::SHMHellper::connectSHM(shm_space::blinkyPrefix + shm_space::positionTag);
+    utilities_space::SHMHellper::connectSHM(shm_space::blinkyPrefix + shm_space::appearanceTag);
 }
 

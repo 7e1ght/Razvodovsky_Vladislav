@@ -14,10 +14,12 @@ void Clyde::resetAppearance()
 Clyde::Clyde(std::shared_ptr<Characters> player) :
     Ghost(position_space::CLYDE_START_POSITION, appearance_space::CLYDE_APPREARANCE, 0.5f)
 {
-
-
 	_stdMode.reset(new ClydeChase(mode::MAX_DURATION, player, this));
 	_mode = _stdMode;
 
 	_isInitialized = true;
+
+    setPositionToSHM();
+    setAppearanceToSHM();
+    setDirToSHM();
 }

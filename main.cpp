@@ -1,6 +1,11 @@
 ﻿#include "GameController.h"
+
+#include "Player.h"
 #include <ncurses.h>
 #include <iostream>
+#include <spawn.h>
+#include <unistd.h>
+#include <Game.h>
 
 int main()
 {

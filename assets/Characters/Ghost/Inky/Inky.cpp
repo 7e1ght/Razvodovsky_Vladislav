@@ -18,4 +18,8 @@ Inky::Inky(std::shared_ptr<Characters> player, std::shared_ptr<Characters> blink
 	_mode = _stdMode;
 
 	_isInitialized = true;
+
+    setPositionToSHM();
+    setAppearanceToSHM();
+    setDirToSHM();
 }
