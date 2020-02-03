@@ -12,9 +12,25 @@ int main()
 
     Pinky pinky;
 
-    while(utilities_space::SHMHellper::getDataSHM<game_scene::STATE>(shm_space::gameShmStateName) != game_scene::STATE::LOSE)
+    bool outLoop = false;
+
+    while(outLoop == false)
     {
-        pinky.move();
+        game_scene::STATE gameState = utilities_space::SHMHellper::getDataSHM<game_scene::STATE>(shm_space::gameShmStateName);
+        switch (gameState)
+        {
+        case game_scene::STATE::PLAY:
+            pinky.move();
+            break;
+        case game_scene::STATE::LOSE:
+            outLoop = true;
+            break;
+        case game_scene::STATE::GHOST_EAT_ME:
+            pinky.resetPosition();
+            break;
+        default:
+            break;
+        }
     }
 
     return 0;

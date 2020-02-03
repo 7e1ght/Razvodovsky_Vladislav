@@ -60,7 +60,7 @@ private:
 	void drawScore();
 	void drawLife();
 
-	void resetAll();
+    void resetMainHeroPosition();
 
 	void dieScreen();
 

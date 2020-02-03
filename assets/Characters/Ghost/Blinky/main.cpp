@@ -10,9 +10,25 @@ int main()
     utilities_space::SHMHellper::connectSHM(shm_space::gameShmStateName);
     Blinky blinky;
 
-    while(utilities_space::SHMHellper::getDataSHM<game_scene::STATE>(shm_space::gameShmStateName) != game_scene::STATE::LOSE)
+    bool outLoop = false;
+
+    while(outLoop == false)
     {
-        blinky.move();
+        game_scene::STATE gameState = utilities_space::SHMHellper::getDataSHM<game_scene::STATE>(shm_space::gameShmStateName);
+        switch (gameState)
+        {
+        case game_scene::STATE::PLAY:
+            blinky.move();
+            break;
+        case game_scene::STATE::LOSE:
+            outLoop = true;
+            break;
+        case game_scene::STATE::GHOST_EAT_ME:
+            blinky.resetPosition();
+            break;
+        default:
+            break;
+        }
     }
 
     return 0;

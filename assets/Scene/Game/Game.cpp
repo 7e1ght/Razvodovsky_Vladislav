@@ -20,7 +20,6 @@ namespace maps = map_space;
 
 id_space::SCENE_ID Game::update(sec delta)
 {
-    setStateToSHM();
 
     switch (_state)
     {
@@ -35,7 +34,7 @@ id_space::SCENE_ID Game::update(sec delta)
     case game_scene::PAUSE:
         break;
     case game_scene::GHOST_EAT_ME:
-        resetAll();
+        resetMainHeroPosition();
         dieScreen();
         _state = game_scene::STATE::PLAY;
         clear();
@@ -44,6 +43,8 @@ id_space::SCENE_ID Game::update(sec delta)
     case game_scene::RESET_GAME:
         break;
     }
+
+    setStateToSHM();
 
 	return _sceneId;
 }
@@ -167,10 +168,9 @@ inline void Game::drawLife()
     drawText(scoreStr, 0, gamefield::GAMEFIELD_COLUMN + 1);
 }
 
-void Game::resetAll()
+inline void Game::resetMainHeroPosition()
 {
-//	for (int i = 0; i < _characters.size(); ++i)
-//		_characters[i]->resetPosition();
+    _mainHero->resetPosition();
 }
 
 inline void Game::dieScreen()
